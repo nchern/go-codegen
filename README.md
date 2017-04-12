@@ -7,7 +7,7 @@ Yet another attempt of code generaton in Golang.
 Install
 ===
 ```go
-go get -u "github.com/nchern/go/go-codegen/..."
+go get -u "github.com/nchern/go-codegen/..."
 ```
 
 Usage
