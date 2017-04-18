@@ -1,4 +1,4 @@
-.PHONY: clean install install-deps build test
+.PHONY: clean install install-deps build test bindata
 
 TEST_DIR=tests
 
@@ -11,12 +11,13 @@ install-deps:
 clean:
 	rm -rf $(TEST_DIR)/generated_*.go
 
-install:
+bindata:
 	go-bindata -pkg=code -prefix=code -o code/bindata.go code/templates/
+
+install: bindata
 	go get ./...
 
-build:
-	go-bindata -pkg=code -prefix=code -o code/bindata.go code/templates/
+build: bindata
 	go build ./...
 
 test:
