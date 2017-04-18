@@ -21,5 +21,6 @@ build:
 
 test:
 	$(GEN) --name=StringMap map string string | goimports > $(TEST_DIR)/generated_string_map.go
+	$(GEN) --name=StringList list string | goimports > $(TEST_DIR)/generated_string_list.go
 
 	go test -race ./...

@@ -42,7 +42,7 @@ func TestStringMap(t *testing.T) {
 func TestStringMapConcurrency(t *testing.T) {
 	m := NewStringMap()
 	for i := 0; i < 1000; i++ {
-		k := fmt.Sprintf("-%s", i)
+		k := fmt.Sprintf("-%d", i)
 		m.Set("k-"+k, "v-"+k)
 	}
 
@@ -58,7 +58,7 @@ func TestStringMapConcurrency(t *testing.T) {
 		}()
 		go func(j int) {
 			wg.Wait()
-			m.Remove(fmt.Sprintf("%s", j))
+			m.Remove(fmt.Sprintf("%d", j))
 		}(i)
 	}
 	wg.Done()
