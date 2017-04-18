@@ -56,7 +56,7 @@ func (l *{{.Name}}) IFilter(f {{.Name}}Predicate) <-chan {{.T0}}  {
     return results
 }
 
-func (l *{{.Name}}) Iter(f {{.Name}}Predicate) <-chan {{.T0}}  {
+func (l *{{.Name}}) Iter() <-chan {{.T0}}  {
     results := make(chan {{.T0}})
     go func() {
         {{if .IsSync}}
@@ -176,7 +176,7 @@ func (l *{{.Name}}) Sort() {
     defer l._lock.Unlock()
     {{end}}
 
-    sort.Sort(l._list)
+    sort.Sort(l)
 
 }
 
