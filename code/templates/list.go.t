@@ -86,6 +86,14 @@ func (l *{{.Name}}) Each(visitor {{.Name}}Visitor) *{{.Name}} {
     return l
 }
 
+func (l *{{.Name}}) Get(i int) {{.T0}} {
+    {{if .IsSync}}
+    l._lock.RLock()
+    defer l._lock.RUnlock()
+    {{end}}
+
+    return l._list[i]
+}
 
 func (l *{{.Name}}) Any(f {{.Name}}Predicate) bool {
     {{if .IsSync}}
