@@ -12,9 +12,11 @@ clean:
 	rm -rf $(TEST_DIR)/generated_*.go
 
 install:
+	go-bindata -pkg=code -prefix=code -o code/bindata.go code/templates/
 	go get ./...
 
 build:
+	go-bindata -pkg=code -prefix=code -o code/bindata.go code/templates/
 	go build ./...
 
 test:
