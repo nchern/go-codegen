@@ -148,6 +148,11 @@ func (l *{{.Name}}) FindLast(f {{.Name}}Predicate, defaultVal {{.T0}}) {{.T0}} {
 // For sort
 
 func (l *{{.Name}}) ByFunc(lessFn {{.Name}}LessFunc) *{{.Name}}{
+    {{if .IsSync}}
+    l._lock.Lock()
+    defer l._lock.Unlock()
+    {{end}}
+
     l.lessFn = lessFn
     return l
 }
@@ -163,6 +168,16 @@ func (l *{{.Name}}) Len() int {
 
 func (l *{{.Name}}) Swap(i, j int) {
     l._list[i], l._list[j] = l._list[j], l._list[i]
+}
+
+func (l *{{.Name}}) Sort() {
+    {{if .IsSync}}
+    l._lock.Lock()
+    defer l._lock.Unlock()
+    {{end}}
+
+    sort.Sort(l._list)
+
 }
 
 
