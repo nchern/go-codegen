@@ -1,27 +1,22 @@
-.PHONY: clean install install-deps build test bindata
-
 TEST_DIR=tests
 
-GEN=go-codegen --pkg=main --sync 
+GEN=go-codegen --pkg=main 
 
-
-install-deps:
-	go get -u github.com/jteeuwen/go-bindata/...
-
+.PHONY: clean
 clean:
 	rm -rf $(TEST_DIR)/generated_*.go
 
+.PHONY: bindata
 bindata:
-	go-bindata -pkg=code -prefix=code -o code/bindata.go code/templates/
+	go-bindata -prefix=pkg/generic -ignore="_test.go" -pkg=generic -o pkg/generic/bindata.go pkg/generic/list/ pkg/generic/set/ pkg/generic/typedmap/ pkg/generic/iterator/
 
-install: bindata
-	go get ./...
-
+.PHONY: build
 build: bindata
 	go build ./...
 
+.PHONY: test
 test:
-	$(GEN) --name=StringMap map string string | goimports > $(TEST_DIR)/generated_string_map.go
-	$(GEN) --name=StringList list string | goimports > $(TEST_DIR)/generated_string_list.go
+	$(GEN) generic -f pkg/generic/typedmap/typedmap.go string string | goimports > $(TEST_DIR)/generated_string_map.go
+	$(GEN) generic -f pkg/generic/list/list.go string | goimports > $(TEST_DIR)/generated_string_list.go
 
 	go test -race ./...

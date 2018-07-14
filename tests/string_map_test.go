@@ -7,7 +7,7 @@ import (
 )
 
 func TestStringMap(t *testing.T) {
-	m := NewStringMap()
+	m := NewStringStringMap()
 
 	m.Set("foo", "bar")
 
@@ -40,7 +40,7 @@ func TestStringMap(t *testing.T) {
 }
 
 func TestStringMapConcurrency(t *testing.T) {
-	m := NewStringMap()
+	m := NewStringStringMapSyncronized()
 	for i := 0; i < 1000; i++ {
 		k := fmt.Sprintf("-%d", i)
 		m.Set("k-"+k, "v-"+k)
