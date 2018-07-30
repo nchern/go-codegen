@@ -42,7 +42,7 @@ Use "go-codegen [command] --help" for more information about a command.
 go-codegen --pkg=main generic -f pkg/generic/list/list.go string
 ```
 
-Generics implemented by parsing an input go source file into the AST and substituting predefined "generic" types. Currently only a fixed list of such types is supported: `T0, T1, ..., T5`. The advantage of such approach as the generic implementation(input source) is the correct go source that can be tested.
+Generics are implemented by parsing an input go source file into an AST and substituting predefined "generic" types. Currently only a fixed list of such types is supported: `T0, T1, ..., T5`. The advantage of such approach as the generic implementation(input source) is the correct go source that can be tested.
 See build-ins as [examples](pkg/generic/list/list.go) of how to define a generic type.
 See [test code](tests) for more examples.
 
