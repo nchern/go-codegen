@@ -28,7 +28,7 @@ Available Commands:
 Flags:
   -f, --file string   input file name (reqiured)
   -h, --help          help for go-codegen
-  -p, --pkg string    Golang package name. Substitues existing package name or makes generator to add one
+  -p, --pkg string    Golang package name. Substitutes existing package name or makes generator to add one
 
 Use "go-codegen [command] --help" for more information about a command.
 ```

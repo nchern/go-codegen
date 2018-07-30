@@ -1,4 +1,4 @@
 package main
 
-// to supress compile errors
+// to suppress compile errors
 func main() {}

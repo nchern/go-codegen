@@ -28,7 +28,7 @@ var (
 	buildInType = ""
 
 	commands = []*cobra.Command{
-		&cobra.Command{
+		{
 			Use:   "generic [list of concrete types to substitute type vars]",
 			Short: "Processes go source as generic file and outputs code with substituted type vars",
 			Args:  cobra.MinimumNArgs(1),
@@ -47,7 +47,7 @@ var (
 				failOnError(err)
 			},
 		},
-		&cobra.Command{
+		{
 			Use:   "immutable",
 			Short: "Generates immutable implementation by a given interface.",
 			Args:  cobra.NoArgs,
@@ -67,7 +67,7 @@ func main() {
 		Long: "Go code generation tool. Prints output to stdout",
 	}
 
-	rootCmd.PersistentFlags().StringVarP(&pkgName, "pkg", "p", "", "Golang package name. Substitues existing package name or makes generator to add one")
+	rootCmd.PersistentFlags().StringVarP(&pkgName, "pkg", "p", "", "Golang package name. Substitutes existing package name or makes generator to add one")
 	rootCmd.PersistentFlags().StringVarP(&filename, "file", "f", "", "input file name (reqiured)")
 
 	commands[0].Flags().StringVarP(&buildInType, "type", "t", "",
