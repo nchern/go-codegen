@@ -86,7 +86,7 @@ func listListGo() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "list/list.go", size: 3789, mode: os.FileMode(420), modTime: time.Unix(1531749417, 0)}
+	info := bindataFileInfo{name: "list/list.go", size: 3789, mode: os.FileMode(420), modTime: time.Unix(1532984840, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -106,7 +106,7 @@ func setSetGo() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "set/set.go", size: 932, mode: os.FileMode(420), modTime: time.Unix(1531773952, 0)}
+	info := bindataFileInfo{name: "set/set.go", size: 932, mode: os.FileMode(420), modTime: time.Unix(1532984840, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -126,7 +126,7 @@ func typedmapTypedmapGo() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "typedmap/typedmap.go", size: 1414, mode: os.FileMode(420), modTime: time.Unix(1531748759, 0)}
+	info := bindataFileInfo{name: "typedmap/typedmap.go", size: 1414, mode: os.FileMode(420), modTime: time.Unix(1532984840, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -146,7 +146,7 @@ func iteratorIteratorGo() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "iterator/iterator.go", size: 451, mode: os.FileMode(420), modTime: time.Unix(1531565102, 0)}
+	info := bindataFileInfo{name: "iterator/iterator.go", size: 451, mode: os.FileMode(420), modTime: time.Unix(1532984840, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
