@@ -51,7 +51,7 @@ TBD.
  - [ ] implement JSON serialisation / deserialisation
  - [ ] examples
 
-# Nice to have
+## Nice to have
 
  * Integration with [gen](http://alikewise.com/gen/)
 
