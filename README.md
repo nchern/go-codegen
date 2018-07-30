@@ -16,7 +16,7 @@ make test # generates code and runs tests
 ```
 
 ## Usage
-```bash
+```text
 Go code generation tool. Prints output to stdout
 
 Usage:
