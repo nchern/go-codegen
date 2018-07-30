@@ -10,7 +10,7 @@ import (
 
 func TestStringList(t *testing.T) {
 	original := []string{"foo", "bar", "buzz"}
-	l := NewStringListFromSlice(original)
+	l := NewStringListFromSlice(original...)
 
 	i := 0
 	for s := range l.Iter() {
@@ -47,7 +47,7 @@ func TestStringList(t *testing.T) {
 	}
 
 	mustBeSorted := []string{}
-	l.ByFunc(func(s1, s2 string) bool { return s1 < s2 }).Sort()
+	l.Sort(func(s1, s2 string) bool { return s1 < s2 })
 	for s := range l.Iter() {
 		mustBeSorted = append(mustBeSorted, s)
 	}
@@ -58,7 +58,7 @@ func TestStringList(t *testing.T) {
 }
 
 func TestStringListConcurrency(t *testing.T) {
-	l := NewStringList()
+	l := NewSyncronizedStringList()
 	for i := 0; i < 1000; i++ {
 		l.Append(fmt.Sprintf("%d", i))
 	}
@@ -70,7 +70,7 @@ func TestStringListConcurrency(t *testing.T) {
 	for i := 0; i < n; i++ {
 		go func() {
 			wg.Wait()
-			l.ByFunc(func(s1, s2 string) bool { return s1 < s2 }).Sort()
+			l.Sort(func(s1, s2 string) bool { return s1 < s2 })
 			done <- true
 		}()
 		go func(j int) {
