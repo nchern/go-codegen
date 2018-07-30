@@ -1,3 +1,5 @@
+[![Go Report Card](https://goreportcard.com/badge/github.com/nchern/go-codegen)](https://goreportcard.com/report/github.com/nchern/go-codegen)
+
 # go-codegen
 
 With a lack of templates some of the gophers really miss them...
