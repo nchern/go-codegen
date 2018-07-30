@@ -79,7 +79,7 @@ func TestImmutableMethodHasParamsError(t *testing.T) {
 	defer os.Remove(file.Name())
 
 	buf := bytes.Buffer{}
-	err := FromFile(file.Name()).WriteTo(&buf)
+	err := FromFile(file.Name()).Generate(&buf)
 	assert.Error(t, err)
 	assert.Equal(t, ErrUnsupportedMethodSignature, err)
 }
@@ -93,7 +93,7 @@ func TestImmutableMethodHasMoreThanOneReturnParamsError(t *testing.T) {
 	defer os.Remove(file.Name())
 
 	buf := bytes.Buffer{}
-	err := FromFile(file.Name()).WriteTo(&buf)
+	err := FromFile(file.Name()).Generate(&buf)
 	assert.Error(t, err)
 	assert.Equal(t, ErrUnsupportedMethodSignature, err)
 }
@@ -110,7 +110,7 @@ func TestImmutableWriteTo(t *testing.T) {
 	defer os.Remove(file.Name())
 
 	buf := bytes.Buffer{}
-	err := FromFile(file.Name()).WriteTo(&buf)
+	err := FromFile(file.Name()).Generate(&buf)
 	assert.NoError(t, err)
 
 	expectedSrc := strings.Replace(generatedImmutableSrc, "'", "`", -1)

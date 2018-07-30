@@ -10,7 +10,7 @@ func BuiltInTypes() []string {
 	return res
 }
 
-func BuiltIn(typeName string, pkgName string) (Processor, error) {
+func BuiltIn(typeName string, pkgName string) (Generator, error) {
 	src, err := Asset(filepath.Join(typeName, typeName+".go"))
 	if err != nil {
 		return nil, err

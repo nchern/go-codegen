@@ -34,7 +34,7 @@ var (
 			Args:  cobra.MinimumNArgs(1),
 			Run: func(cmd *cobra.Command, args []string) {
 				var err error
-				var processor generic.Processor
+				var processor generic.Generator
 				if buildInType != "" {
 					processor, err = generic.BuiltIn(buildInType, pkgName)
 					failOnError(err)
@@ -43,7 +43,7 @@ var (
 				}
 				err = processor.
 					WithTypeMapping(generic.TypeMapFromStrings(args...)).
-					WriteTo(os.Stdout)
+					Generate(os.Stdout)
 				failOnError(err)
 			},
 		},
@@ -53,7 +53,7 @@ var (
 			Args:  cobra.NoArgs,
 			Run: func(cmd *cobra.Command, args []string) {
 				err := immutable.FromFile(filename).
-					WriteTo(os.Stdout)
+					Generate(os.Stdout)
 				failOnError(err)
 			},
 		},

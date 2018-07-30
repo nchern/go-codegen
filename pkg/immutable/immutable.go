@@ -103,9 +103,9 @@ func (t *typeInfo) generate(lines []string, w io.Writer) {
 	}
 }
 
-// Generator abstractss immutable generator
+// Generator abstracts immutable generator
 type Generator interface {
-	WriteTo(w io.Writer) error
+	Generate(w io.Writer) error
 }
 
 type immutableGenerator struct {
@@ -118,7 +118,7 @@ func FromFile(filename string) Generator {
 	}
 }
 
-func (g *immutableGenerator) WriteTo(w io.Writer) error {
+func (g *immutableGenerator) Generate(w io.Writer) error {
 	immutables := []typeInfo{}
 
 	fset := token.NewFileSet()
