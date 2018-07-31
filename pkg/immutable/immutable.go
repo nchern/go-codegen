@@ -86,7 +86,7 @@ func (t *typeInfo) GenerateImmutableStruct(w io.Writer) {
 func (t *typeInfo) GenerateImmutableBuilder(w io.Writer) {
 	lines := []string{
 		"type {{.BuilderName}} struct { value *{{.StructName}} }",
-		"func New{{.Name}}Builder() *{{.BuilderName}} { return &{{.BuilderName}}{} }",
+		"func New{{.Name}}Builder() *{{.BuilderName}} { return &{{.BuilderName}}{ &{{.StructName}}{} } }",
 	}
 	for _, m := range t.Methods {
 		lines = append(lines, m.GenerateBuilderSetter(t.BuilderName()))
@@ -105,10 +105,12 @@ func (t *typeInfo) generate(lines []string, w io.Writer) {
 
 // Generator abstracts immutable generator
 type Generator interface {
+	WithPackageName(name string) Generator
 	Generate(w io.Writer) error
 }
 
 type immutableGenerator struct {
+	pkgName  string
 	filename string
 }
 
@@ -116,6 +118,11 @@ func FromFile(filename string) Generator {
 	return &immutableGenerator{
 		filename: filename,
 	}
+}
+
+func (g *immutableGenerator) WithPackageName(name string) Generator {
+	g.pkgName = name
+	return g
 }
 
 func (g *immutableGenerator) Generate(w io.Writer) error {
@@ -163,6 +170,11 @@ func (g *immutableGenerator) Generate(w io.Writer) error {
 	})
 	if err != nil {
 		return err
+	}
+	if g.pkgName != "" {
+		if _, err := io.WriteString(w, fmt.Sprintf("package %s\n", g.pkgName)); err != nil {
+			return err
+		}
 	}
 	for _, immutable := range immutables {
 		immutable.GenerateImmutableStruct(w)

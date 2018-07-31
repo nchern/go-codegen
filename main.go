@@ -36,12 +36,13 @@ var (
 				var err error
 				var processor generic.Generator
 				if buildInType != "" {
-					processor, err = generic.BuiltIn(buildInType, pkgName)
+					processor, err = generic.BuiltIn(buildInType)
 					failOnError(err)
 				} else {
-					processor = generic.FromFile(filename, pkgName)
+					processor = generic.FromFile(filename)
 				}
 				err = processor.
+					WithPackageName(pkgName).
 					WithTypeMapping(generic.TypeMapFromStrings(args...)).
 					Generate(os.Stdout)
 				failOnError(err)
@@ -53,6 +54,7 @@ var (
 			Args:  cobra.NoArgs,
 			Run: func(cmd *cobra.Command, args []string) {
 				err := immutable.FromFile(filename).
+					WithPackageName(pkgName).
 					Generate(os.Stdout)
 				failOnError(err)
 			},

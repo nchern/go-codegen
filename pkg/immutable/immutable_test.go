@@ -19,7 +19,7 @@ const (
 	func (m *valueStruct) SomeValue() int { return m.SomeValueField }
 
 	type ImmutableValueBuilder struct { value *valueStruct }
-	func NewValueBuilder() *ImmutableValueBuilder { return &ImmutableValueBuilder{} }
+	func NewValueBuilder() *ImmutableValueBuilder { return &ImmutableValueBuilder{ &valueStruct{} } }
 	func (b *ImmutableValueBuilder) SomeName(SomeNameField string) *ImmutableValueBuilder { b.value.SomeNameField = SomeNameField; return b }
 	func (b *ImmutableValueBuilder) SomeValue(SomeValueField int) *ImmutableValueBuilder { b.value.SomeValueField = SomeValueField; return b }
 	func (b ImmutableValueBuilder) Build() Value { ret := *b.value; return &ret }`

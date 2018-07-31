@@ -50,7 +50,7 @@ func TestStripTypeVarsDecls(t *testing.T) {
 }
 
 func TestGenericBadTypeVarError(t *testing.T) {
-	err := FromFile("file.go", "").
+	err := FromFile("file.go").
 		WithTypeMapping(TypeMap{TypeVar("BOO"): "*string"}).
 		Generate(os.Stderr)
 	assert.Error(t, err)
@@ -67,7 +67,8 @@ func TestGenericWriteToRewritesPackageName(t *testing.T) {
 	defer os.Remove(file.Name())
 
 	actualBuf := bytes.Buffer{}
-	err := FromFile(file.Name(), "new").
+	err := FromFile(file.Name()).
+		WithPackageName("new").
 		WithTypeMapping(TypeMap{T0: "string"}).
 		Generate(&actualBuf)
 	assert.NoError(t, err)
@@ -93,7 +94,7 @@ func TestGenericWriteTo(t *testing.T) {
 	defer os.Remove(file.Name())
 
 	actualBuf := bytes.Buffer{}
-	err := FromFile(file.Name(), "").
+	err := FromFile(file.Name()).
 		WithTypeMapping(TypeMap{T0: "string", T1: "*Object"}).
 		Generate(&actualBuf)
 
