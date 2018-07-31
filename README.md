@@ -5,14 +5,14 @@
 With a lack of templates some of the gophers really miss them...
 Yet another attempt of code generaton in Golang.
 
-## Install
-```go
-go get -u "github.com/nchern/go-codegen/..."
-```
-
 ## Testing
 ```bash
 make test # generates code and runs tests
+```
+
+## Install
+```bash
+make install
 ```
 
 ## Usage
