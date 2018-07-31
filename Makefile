@@ -19,4 +19,6 @@ test:
 	$(GEN) generic -f pkg/generic/typedmap/typedmap.go string string | goimports > $(TEST_DIR)/generated_string_map.go
 	$(GEN) generic -f pkg/generic/list/list.go string | goimports > $(TEST_DIR)/generated_string_list.go
 
+	$(GEN) --pkg=model immutable -f $(TEST_DIR)/immutable/model/model.go | gofmt  > $(TEST_DIR)/immutable/model/generated_model_impl.go
+
 	go test -race ./...
