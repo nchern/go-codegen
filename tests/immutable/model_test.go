@@ -8,8 +8,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestModel(t *testing.T) {
-	m := model.NewModelBuilder().
+func TestGeneratedImplementation(t *testing.T) {
+	m := model.NewDTOBuilder().
 		Foo("foo").
 		Bar(101).
 		Buzz(true).
@@ -22,8 +22,8 @@ func TestModel(t *testing.T) {
 	assert.Equal(t, 3.14, m.Value())
 }
 
-func TestModelJSONEncodeDecode(t *testing.T) {
-	expected := model.NewModelBuilder().
+func TestJSONEncodeDecode(t *testing.T) {
+	expected := model.NewDTOBuilder().
 		Foo("foo").
 		Bar(101).
 		Buzz(true).
@@ -36,7 +36,7 @@ func TestModelJSONEncodeDecode(t *testing.T) {
 	assert.True(t, len(encoded) > 0)
 	//	assert.Equal(t, "{d}", string(encoded))
 
-	actual := model.NewModelBuilder().Build()
+	actual := model.NewDTOBuilder().Build()
 	assert.NoError(t, json.Unmarshal(encoded, actual))
 
 	assert.Equal(t, expected.Foo(), actual.Foo())
