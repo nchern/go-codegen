@@ -56,10 +56,10 @@ func TestMethodStruct(t *testing.T) {
 	assert.Equal(t, "FooField int64 `json:\"foo\"`", inTest.StructField())
 
 	assert.Equal(t, "func (m *Obj) Foo() int64 { return m.FooField }",
-		inTest.GenerateImmutableSetter("Obj"))
+		inTest.generateImmutableSetter("Obj"))
 
 	assert.Equal(t, "func (b *ObjBuilder) Foo(FooField int64) *ObjBuilder { b.value.FooField = FooField; return b }",
-		inTest.GenerateBuilderSetter("ObjBuilder"))
+		inTest.generateBuilderSetter("ObjBuilder"))
 }
 
 func TestTypeInfo(t *testing.T) {

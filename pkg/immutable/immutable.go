@@ -46,12 +46,12 @@ func (m *method) StructField() string {
 	return fmt.Sprintf("%s %s `json:\"%s\"`", m.FieldName(), m.RetValue, camelCaseToSnakeCase(m.Name))
 }
 
-func (m *method) GenerateImmutableSetter(structName string) string {
+func (m *method) generateImmutableSetter(structName string) string {
 	return fmt.Sprintf("func (m *%s) %s() %s { return m.%s }",
 		structName, m.Name, m.RetValue, m.FieldName())
 }
 
-func (m *method) GenerateBuilderSetter(builderTypeName string) string {
+func (m *method) generateBuilderSetter(builderTypeName string) string {
 	immutableFieldName := m.FieldName()
 	return fmt.Sprintf("func (b *%s) %s(%s %s) *%s { b.value.%s = %s; return b }",
 		builderTypeName, m.Name, immutableFieldName, m.RetValue, builderTypeName, immutableFieldName, immutableFieldName)
@@ -71,25 +71,25 @@ func (t *typeInfo) StructName() string {
 	return strings.ToLower(t.Name) + "Struct"
 }
 
-func (t *typeInfo) GenerateImmutableStruct(w io.Writer) {
+func (t *typeInfo) generateImmutableStruct(w io.Writer) {
 	lines := []string{"type {{.StructName}}  struct {"}
 	for _, m := range t.Methods {
 		lines = append(lines, m.StructField())
 	}
 	lines = append(lines, "}")
 	for _, m := range t.Methods {
-		lines = append(lines, m.GenerateImmutableSetter(t.StructName()))
+		lines = append(lines, m.generateImmutableSetter(t.StructName()))
 	}
 	t.generate(lines, w)
 }
 
-func (t *typeInfo) GenerateImmutableBuilder(w io.Writer) {
+func (t *typeInfo) generateImmutableBuilder(w io.Writer) {
 	lines := []string{
 		"type {{.BuilderName}} struct { value *{{.StructName}} }",
 		"func New{{.Name}}Builder() *{{.BuilderName}} { return &{{.BuilderName}}{ &{{.StructName}}{} } }",
 	}
 	for _, m := range t.Methods {
-		lines = append(lines, m.GenerateBuilderSetter(t.BuilderName()))
+		lines = append(lines, m.generateBuilderSetter(t.BuilderName()))
 	}
 	lines = append(lines, "func (b {{.BuilderName}}) Build() {{.Name}} { ret := *b.value; return &ret }")
 	t.generate(lines, w)
@@ -177,8 +177,8 @@ func (g *immutableGenerator) Generate(w io.Writer) error {
 		}
 	}
 	for _, immutable := range immutables {
-		immutable.GenerateImmutableStruct(w)
-		immutable.GenerateImmutableBuilder(w)
+		immutable.generateImmutableStruct(w)
+		immutable.generateImmutableBuilder(w)
 	}
 
 	return nil
