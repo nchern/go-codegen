@@ -69,6 +69,8 @@ func (m TypeMap) substituteTypeVarInIdent(n *ast.Ident) {
 		subs := tVal
 		if strings.HasPrefix(tVal, "*") {
 			subs = strings.TrimPrefix(tVal, "*") + "Ptr"
+		} else if tVal == "interface{}" {
+			subs = "Object"
 		}
 		n.Name = strings.Replace(n.Name, string(tVar), strings.Title(subs), -1)
 	}

@@ -14,7 +14,10 @@ import (
 )
 
 func TestTypeMap(t *testing.T) {
-	m := TypeMap{T0: "string", T1: "*Point"}
+	m := TypeMap{
+		T0: "string",
+		T1: "*Point",
+	}
 
 	ident := ast.NewIdent("T0")
 	assert.True(t, m.rewriteType(ident))
@@ -28,6 +31,10 @@ func TestTypeMap(t *testing.T) {
 	m.substituteTypeVarInIdent(ident)
 	assert.Equal(t, "NewStringFooPointPtr", ident.Name)
 
+	m = TypeMap{T0: "interface{}"}
+	ident = ast.NewIdent("NewT0List")
+	m.substituteTypeVarInIdent(ident)
+	assert.Equal(t, "NewObjectList", ident.Name)
 }
 
 func TestStripTypeVarsDecls(t *testing.T) {
@@ -37,7 +44,10 @@ func TestStripTypeVarsDecls(t *testing.T) {
 	func foo() {}
 	type T1 bool
 	`
-	m := TypeMap{T0: "string", T1: "*Point"}
+	m := TypeMap{
+		T0: "string",
+		T1: "*Point",
+	}
 	fset := token.NewFileSet()
 	node, err := parser.ParseFile(fset, "", srcText, parser.ParseComments)
 	assert.NoError(t, err)
