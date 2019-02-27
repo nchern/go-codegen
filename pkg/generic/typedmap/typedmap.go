@@ -11,13 +11,13 @@ type T0T1Map struct {
 	_map map[T0]T1
 
 	isSynced bool
-	mutext   *sync.RWMutex
+	mutex    *sync.RWMutex
 }
 
 func NewT0T1Map() *T0T1Map {
 	res := &T0T1Map{
-		_map:   map[T0]T1{},
-		mutext: &sync.RWMutex{},
+		_map:  map[T0]T1{},
+		mutex: &sync.RWMutex{},
 	}
 	return res
 }
@@ -30,8 +30,8 @@ func NewT0T1MapSyncronized() *T0T1Map {
 
 func (m *T0T1Map) Get(key T0) (v T1, found bool) {
 	if m.isSynced {
-		m.mutext.RLock()
-		defer m.mutext.RUnlock()
+		m.mutex.RLock()
+		defer m.mutex.RUnlock()
 	}
 
 	v, found = m._map[key]
@@ -40,8 +40,8 @@ func (m *T0T1Map) Get(key T0) (v T1, found bool) {
 
 func (m *T0T1Map) Each(visitor T0T1MapVisitor) {
 	if m.isSynced {
-		m.mutext.RLock()
-		defer m.mutext.RUnlock()
+		m.mutex.RLock()
+		defer m.mutex.RUnlock()
 	}
 
 	for k, v := range m._map {
@@ -52,8 +52,8 @@ func (m *T0T1Map) Each(visitor T0T1MapVisitor) {
 }
 func (m *T0T1Map) Set(key T0, val T1) {
 	if m.isSynced {
-		m.mutext.Lock()
-		defer m.mutext.Unlock()
+		m.mutex.Lock()
+		defer m.mutex.Unlock()
 	}
 
 	m._map[key] = val
@@ -61,8 +61,8 @@ func (m *T0T1Map) Set(key T0, val T1) {
 
 func (m *T0T1Map) Update(src map[T0]T1) *T0T1Map {
 	if m.isSynced {
-		m.mutext.Lock()
-		defer m.mutext.Unlock()
+		m.mutex.Lock()
+		defer m.mutex.Unlock()
 	}
 
 	for k, v := range src {
@@ -73,8 +73,8 @@ func (m *T0T1Map) Update(src map[T0]T1) *T0T1Map {
 
 func (m *T0T1Map) Remove(key T0) bool {
 	if m.isSynced {
-		m.mutext.Lock()
-		defer m.mutext.Unlock()
+		m.mutex.Lock()
+		defer m.mutex.Unlock()
 	}
 
 	_, found := m._map[key]
@@ -85,8 +85,8 @@ func (m *T0T1Map) Remove(key T0) bool {
 
 func (m *T0T1Map) Clone() *T0T1Map {
 	if m.isSynced {
-		m.mutext.Lock()
-		defer m.mutext.Unlock()
+		m.mutex.Lock()
+		defer m.mutex.Unlock()
 	}
 
 	res := NewT0T1Map()
