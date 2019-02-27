@@ -70,7 +70,7 @@ func main() {
 	}
 
 	rootCmd.PersistentFlags().StringVarP(&pkgName, "pkg", "p", "", "Golang package name. Substitutes existing package name or makes generator to add one")
-	rootCmd.PersistentFlags().StringVarP(&filename, "file", "f", "", "input file name (reqiured)")
+	rootCmd.PersistentFlags().StringVarP(&filename, "file", "f", "", "input file name (reqiured, if no built-ins used)")
 
 	commands[0].Flags().StringVarP(&buildInType, "type", "t", "",
 		fmt.Sprintf("Generates based on predefined generic file. One of: %s", strings.Join(generic.BuiltInTypes(), ", ")))
