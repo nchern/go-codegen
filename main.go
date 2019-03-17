@@ -6,6 +6,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/nchern/go-codegen/pkg/code"
 	"github.com/nchern/go-codegen/pkg/generic"
 	"github.com/nchern/go-codegen/pkg/immutable"
 	"github.com/spf13/cobra"
@@ -34,16 +35,17 @@ var (
 			Args:  cobra.MinimumNArgs(1),
 			Run: func(cmd *cobra.Command, args []string) {
 				var err error
-				var processor generic.Generator
+				var generator generic.Generator
 				if buildInType != "" {
-					processor, err = generic.BuiltIn(buildInType)
+					generator, err = generic.BuiltIn(buildInType)
 					dieIf(err)
 				} else {
-					processor = generic.FromFile(filename)
+					generator = generic.FromFile(filename)
 				}
-				err = processor.
-					WithPackageName(pkgName).
-					WithTypeMapping(generic.TypeMapFromStrings(args...)).
+				err = code.WrapWithBannerPrinter(
+					generator.
+						WithPackageName(pkgName).
+						WithTypeMapping(generic.TypeMapFromStrings(args...))).
 					Generate(os.Stdout)
 				dieIf(err)
 			},
@@ -53,8 +55,9 @@ var (
 			Short: "Generates immutable implementation by a given interface.",
 			Args:  cobra.NoArgs,
 			Run: func(cmd *cobra.Command, args []string) {
-				err := immutable.FromFile(filename).
-					WithPackageName(pkgName).
+				err := code.WrapWithBannerPrinter(
+					immutable.FromFile(filename).
+						WithPackageName(pkgName)).
 					Generate(os.Stdout)
 				dieIf(err)
 			},
@@ -79,5 +82,6 @@ func main() {
 		rootCmd.AddCommand(cmd)
 	}
 
-	dieIf(rootCmd.Execute())
+	err := rootCmd.Execute()
+	dieIf(err)
 }
