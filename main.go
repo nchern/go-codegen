@@ -15,7 +15,7 @@ func init() {
 	log.SetFlags(0)
 }
 
-func failOnError(err error) {
+func dieIf(err error) {
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -37,7 +37,7 @@ var (
 				var processor generic.Generator
 				if buildInType != "" {
 					processor, err = generic.BuiltIn(buildInType)
-					failOnError(err)
+					dieIf(err)
 				} else {
 					processor = generic.FromFile(filename)
 				}
@@ -45,7 +45,7 @@ var (
 					WithPackageName(pkgName).
 					WithTypeMapping(generic.TypeMapFromStrings(args...)).
 					Generate(os.Stdout)
-				failOnError(err)
+				dieIf(err)
 			},
 		},
 		{
@@ -56,7 +56,7 @@ var (
 				err := immutable.FromFile(filename).
 					WithPackageName(pkgName).
 					Generate(os.Stdout)
-				failOnError(err)
+				dieIf(err)
 			},
 		},
 	}
@@ -79,5 +79,5 @@ func main() {
 		rootCmd.AddCommand(cmd)
 	}
 
-	failOnError(rootCmd.Execute())
+	dieIf(rootCmd.Execute())
 }
