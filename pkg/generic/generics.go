@@ -63,11 +63,11 @@ func (m TypeMap) rewriteType(n *ast.Ident) bool {
 
 func (m TypeMap) substituteTypeVarInIdent(n *ast.Ident) {
 	for tVar, tVal := range m {
-		if strings.Index(n.Name, string(tVar)) < 0 {
+		if !strings.Contains(n.Name, string(tVar)) {
 			continue
 		}
 		subs := tVal
-		if strings.Index(tVal, "*") > -1 {
+		if strings.Contains(tVal, "*") {
 			subs = strings.Replace(subs, "*", "", -1) + "Ptr"
 		}
 		if strings.HasSuffix(tVal, "interface{}") {

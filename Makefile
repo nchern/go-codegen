@@ -11,12 +11,16 @@ bindata:
 	go-bindata -prefix=pkg/generic -ignore="_test.go" -pkg=generic -o pkg/generic/bindata.go pkg/generic/list/ pkg/generic/set/ pkg/generic/typedmap/ pkg/generic/iterator/
 
 .PHONY: build
-build: bindata
+build: bindata vet
 	go build ./...
 
 .PHONY: install
 install: build
 	go get ./...
+
+.PHONY: vet
+vet:
+	 go vet ./...
 
 .PHONY: test
 test: clean
