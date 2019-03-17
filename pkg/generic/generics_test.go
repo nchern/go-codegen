@@ -31,10 +31,27 @@ func TestTypeMap(t *testing.T) {
 	m.substituteTypeVarInIdent(ident)
 	assert.Equal(t, "NewStringFooPointPtr", ident.Name)
 
+	// test complex cases
+
 	m = TypeMap{T0: "interface{}"}
 	ident = ast.NewIdent("NewT0List")
 	m.substituteTypeVarInIdent(ident)
 	assert.Equal(t, "NewObjectList", ident.Name)
+
+	m = TypeMap{T0: "[]string"}
+	ident = ast.NewIdent("NewT0List")
+	m.substituteTypeVarInIdent(ident)
+	assert.Equal(t, "NewStringSliceList", ident.Name)
+
+	m = TypeMap{T0: "[]interface{}"}
+	ident = ast.NewIdent("NewT0List")
+	m.substituteTypeVarInIdent(ident)
+	assert.Equal(t, "NewObjectSliceList", ident.Name)
+
+	m = TypeMap{T0: "[]*Foo"}
+	ident = ast.NewIdent("NewT0List")
+	m.substituteTypeVarInIdent(ident)
+	assert.Equal(t, "NewFooPtrSliceList", ident.Name)
 }
 
 func TestStripTypeVarsDecls(t *testing.T) {

@@ -67,11 +67,16 @@ func (m TypeMap) substituteTypeVarInIdent(n *ast.Ident) {
 			continue
 		}
 		subs := tVal
-		if strings.HasPrefix(tVal, "*") {
-			subs = strings.TrimPrefix(tVal, "*") + "Ptr"
-		} else if tVal == "interface{}" {
-			subs = "Object"
+		if strings.Index(tVal, "*") > -1 {
+			subs = strings.Replace(subs, "*", "", -1) + "Ptr"
 		}
+		if strings.HasSuffix(tVal, "interface{}") {
+			subs = strings.Replace(subs, "interface{}", "Object", -1)
+		}
+		if strings.HasPrefix(tVal, "[]") {
+			subs = strings.TrimPrefix(subs, "[]") + "Slice"
+		}
+
 		n.Name = strings.Replace(n.Name, string(tVar), strings.Title(subs), -1)
 	}
 }
