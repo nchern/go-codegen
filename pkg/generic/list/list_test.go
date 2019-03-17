@@ -14,7 +14,11 @@ func TestListClone(t *testing.T) {
 
 	src := NewT0ListFromSlice(expectedArr...)
 	inTest := src.Clone()
-	assert.Equal(t, expectedArr, inTest.list)
+
+	for i, expectedVal := range expectedArr {
+		assert.Equal(t, expectedVal, inTest.Get(i))
+	}
+
 	v := T0("FOO")
 	inTest.Set(1, v)
 	assert.Equal(t, v, inTest.Get(1))
@@ -64,5 +68,8 @@ func TestSort(t *testing.T) {
 	inTest.Sort(func(a, b T0) bool { return a < b })
 
 	expected := []T0{"bar", "buzz", "foo"}
-	assert.Equal(t, expected, inTest.list)
+
+	for i, expectedVal := range expected {
+		assert.Equal(t, expectedVal, inTest.Get(i))
+	}
 }
