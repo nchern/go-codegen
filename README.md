@@ -37,6 +37,7 @@ Use "go-codegen [command] --help" for more information about a command.
 
 ### Generics
 
+#### Usage
 ```bash
 # Outputs typed string list implementation to stdout
 go-codegen --pkg=main generic -f pkg/generic/list/list.go string
@@ -47,6 +48,13 @@ See build-ins as [examples](pkg/generic/list/list.go) of how to define a generic
 See [test code](tests/generic) for more examples.
 
 ### Immutables
+
+#### Usage
+```bash
+# Gets a .go source file with defined interfaces and outputs implementation along with builder class to create instances
+go-codegen --pkg=model immutable -f tests/immutable/model/model.go
+```
+
 An experiment. Inspired by Java Immutables. See more examples in [test code](tests/immutable/)
 
 ## Nice to have
