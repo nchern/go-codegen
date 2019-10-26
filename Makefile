@@ -1,6 +1,6 @@
 TEST_DIR=tests
 
-GEN=go-codegen --pkg=main 
+GEN=go-codegen
 
 .PHONY: clean
 clean:
@@ -24,8 +24,8 @@ vet:
 
 .PHONY: gen
 gen:
-	$(GEN) generic -f pkg/generic/typedmap/typedmap.go string string | goimports > $(TEST_DIR)/generic/generated_string_map.go
-	$(GEN) generic -f pkg/generic/list/list.go string | goimports > $(TEST_DIR)/generic/generated_string_list.go
+	$(GEN) --pkg=main generic -f pkg/generic/typedmap/typedmap.go string string | goimports > $(TEST_DIR)/generic/generated_string_map.go
+	$(GEN) --pkg=main generic -f pkg/generic/list/list.go string | goimports > $(TEST_DIR)/generic/generated_string_list.go
 	$(GEN) --pkg=main generic -f pkg/generic/iterator/iterator.go  string | goimports | gofmt > $(TEST_DIR)/generic/generated_string_iterator.go
 	$(GEN) --pkg=model immutable -f $(TEST_DIR)/immutable/model/model.go | gofmt  > $(TEST_DIR)/immutable/model/generated_model_impl.go
 
