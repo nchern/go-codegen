@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"go/ast"
 	"go/parser"
+	"go/scanner"
 	"go/token"
 	"io"
 	"io/ioutil"
@@ -91,15 +92,26 @@ func (g *structInitGenerator) WithOutputSrc(outputSrc bool) Generator {
 
 // Generate generates the code
 func (g *structInitGenerator) Generate(w io.Writer) error {
-
 	src, err := g.readAndPrepareSource()
 	if err != nil {
+		return err
+	}
+	if err := g.printInputSourceIfRequired(w, src); err != nil {
 		return err
 	}
 
 	fset := token.NewFileSet()
 	node, err := parser.ParseFile(fset, "stdin", src, parser.ParseComments)
 	if err != nil {
+		if _, ok := err.(scanner.ErrorList); ok {
+			// TODO: decide how to handle it without just skipping
+			// for _, v := range syntaxErr {
+			//	log.Printf("[%s] %T", v, v)
+			// }
+
+			// just do nothing if we can not parse the input - no generation will happen
+			return nil
+		}
 		return err
 	}
 
@@ -127,10 +139,6 @@ func (g *structInitGenerator) Generate(w io.Writer) error {
 		}
 		return true
 	})
-
-	if err := g.printInputSourceIfRequired(w, src); err != nil {
-		return err
-	}
 
 	for _, st := range structs {
 		tpl := template.Must(template.New("init").

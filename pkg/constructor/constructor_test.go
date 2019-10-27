@@ -33,7 +33,7 @@ func NewFoo(bar string, bazz float64) *Foo {
 	assert.Equal(t, strings.Trim(expected, "\n"), actual.String())
 }
 
-func TestShouldOutputSource(t *testing.T) {
+func TestShouldGenerateWithOutputSource(t *testing.T) {
 	source := `type Foo struct {}`
 
 	expected := source + "\n" + `func NewFoo() *Foo {
@@ -46,4 +46,26 @@ func TestShouldOutputSource(t *testing.T) {
 
 	assert.NoError(t, err)
 	assert.Equal(t, strings.Trim(expected, "\n"), actual.String())
+}
+
+func TestShouldGenerateNothingOnUnsupportedTypes(t *testing.T) {
+	var tests = []struct {
+		name  string
+		given string
+	}{
+		{"empty", "\n"},
+		{"interface", "type Foo interface {}"},
+		{"function", "func foo() error { return nil }"},
+		{"just code", "var i = 0\nfmt.Println(i)"},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			var actual bytes.Buffer
+			err := FromReader(bytes.NewBufferString(tt.given)).Generate(&actual)
+
+			assert.NoError(t, err)
+			assert.Equal(t, "", actual.String())
+		})
+	}
 }
