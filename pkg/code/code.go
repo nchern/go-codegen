@@ -10,7 +10,7 @@ const (
 	repoUrl = "https://github.com/nchern/go-codegen"
 )
 
-// Generator
+// Generator defines interface that generates sources
 type Generator interface {
 	Generate(io.Writer) error
 }
