@@ -13,6 +13,8 @@ import (
 )
 
 const (
+	packageHeader = "package main\n"
+
 	initializerTpl = `func New{{.Name}}({{ join .Fields ", "}}) *{{.Name}} {
 	return &{{.Name}}{
 		{{- range .Fields}}
@@ -59,14 +61,14 @@ func join(fields []field, sep string) string {
 }
 
 type typeInfo struct {
-	Name string
-
+	Name   string
 	Fields []field
 }
 
 type structInitGenerator struct {
-	pkgName string
-	src     io.Reader
+	outputSrc bool
+	pkgName   string
+	src       io.Reader
 }
 
 // FromReader creates generator from reader
@@ -82,13 +84,10 @@ func (g *structInitGenerator) WithPackageName(name string) Generator {
 
 // Generate generates the code
 func (g *structInitGenerator) Generate(w io.Writer) error {
-	srcBytes, err := ioutil.ReadAll(g.src)
+
+	src, err := g.readAndPrepareSource()
 	if err != nil {
 		return err
-	}
-	src := string(srcBytes)
-	if !strings.HasPrefix(src, "package ") {
-		src = "package main\n" + src
 	}
 
 	fset := token.NewFileSet()
@@ -122,10 +121,7 @@ func (g *structInitGenerator) Generate(w io.Writer) error {
 		return true
 	})
 
-	if _, err := w.Write(srcBytes); err != nil {
-		return err
-	}
-	if _, err := fmt.Fprintln(w); err != nil {
+	if err := g.printInputSourceIfRequired(w, src); err != nil {
 		return err
 	}
 
@@ -139,4 +135,24 @@ func (g *structInitGenerator) Generate(w io.Writer) error {
 		}
 	}
 	return nil
+}
+
+func (g *structInitGenerator) printInputSourceIfRequired(w io.Writer, src string) error {
+	if _, err := io.WriteString(w, strings.TrimPrefix(src, packageHeader)); err != nil {
+		return err
+	}
+	_, err := fmt.Fprintln(w)
+	return err
+}
+
+func (g *structInitGenerator) readAndPrepareSource() (string, error) {
+	srcBytes, err := ioutil.ReadAll(g.src)
+	if err != nil {
+		return "", err
+	}
+	src := string(srcBytes)
+	if !strings.HasPrefix(src, "package ") {
+		src = packageHeader + src
+	}
+	return src, nil
 }
