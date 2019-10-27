@@ -6,6 +6,7 @@ import (
 	"os"
 )
 
+// FormatSrc formats go source
 func FormatSrc(src string) string {
 	res, err := format.Source([]byte(src))
 	if err != nil {
@@ -14,6 +15,7 @@ func FormatSrc(src string) string {
 	return string(res)
 }
 
+// CreateGoFile creates temp file with given go code
 func CreateGoFile(srcText string) *os.File {
 	file, err := ioutil.TempFile("/tmp", "generic")
 	if err != nil {

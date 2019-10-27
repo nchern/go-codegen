@@ -2,6 +2,7 @@ package generic
 
 import "path/filepath"
 
+// BuiltInTypes return a slice with built-in generic type names
 func BuiltInTypes() []string {
 	res := []string{}
 	for _, name := range AssetNames() {
@@ -10,6 +11,7 @@ func BuiltInTypes() []string {
 	return res
 }
 
+// BuiltIn return a generator object by a given built-in type name
 func BuiltIn(typeName string) (Generator, error) {
 	src, err := Asset(filepath.Join(typeName, typeName+".go"))
 	if err != nil {
