@@ -24,10 +24,10 @@ func dieIf(err error) {
 }
 
 var (
-	pkgName  = ""
-	filename = ""
+	flagPkgName  = ""
+	flagFileName = ""
 
-	buildInType = ""
+	flagBuiltInType = ""
 
 	commands = []*cobra.Command{
 		{
@@ -37,15 +37,15 @@ var (
 			Run: func(cmd *cobra.Command, args []string) {
 				var err error
 				var generator generic.Generator
-				if buildInType != "" {
-					generator, err = generic.BuiltIn(buildInType)
+				if flagBuiltInType != "" {
+					generator, err = generic.BuiltIn(flagBuiltInType)
 					dieIf(err)
 				} else {
-					generator = generic.FromFile(filename)
+					generator = generic.FromFile(flagFileName)
 				}
 				err = code.WrapWithBannerPrinter(
 					generator.
-						WithPackageName(pkgName).
+						WithPackageName(flagPkgName).
 						WithTypeMapping(generic.TypeMapFromStrings(args...))).
 					Generate(os.Stdout)
 				dieIf(err)
@@ -57,8 +57,8 @@ var (
 			Args:  cobra.NoArgs,
 			Run: func(cmd *cobra.Command, args []string) {
 				err := code.WrapWithBannerPrinter(
-					immutable.FromFile(filename).
-						WithPackageName(pkgName)).
+					immutable.FromFile(flagFileName).
+						WithPackageName(flagPkgName)).
 					Generate(os.Stdout)
 				dieIf(err)
 			},
@@ -69,7 +69,7 @@ var (
 			Args:  cobra.NoArgs,
 			Run: func(cmd *cobra.Command, args []string) {
 				err := constructor.FromReader(os.Stdin).
-					WithPackageName(pkgName).
+					WithPackageName(flagPkgName).
 					Generate(os.Stdout)
 				dieIf(err)
 			},
@@ -84,10 +84,10 @@ func main() {
 		Long: "Go code generation tool. Prints output to stdout",
 	}
 
-	rootCmd.PersistentFlags().StringVarP(&pkgName, "pkg", "p", "", "Golang package name. Substitutes existing package name or makes generator to add one")
-	rootCmd.PersistentFlags().StringVarP(&filename, "file", "f", "", "input file name (reqiured, if no built-ins used)")
+	rootCmd.PersistentFlags().StringVarP(&flagPkgName, "pkg", "p", "", "Golang package name. Substitutes existing package name or makes generator to add one")
+	rootCmd.PersistentFlags().StringVarP(&flagFileName, "file", "f", "", "input file name (reqiured, if no built-ins used)")
 
-	commands[0].Flags().StringVarP(&buildInType, "type", "t", "",
+	commands[0].Flags().StringVarP(&flagBuiltInType, "type", "t", "",
 		fmt.Sprintf("Generates based on predefined generic file. One of: %s", strings.Join(generic.BuiltInTypes(), ", ")))
 
 	for _, cmd := range commands {
