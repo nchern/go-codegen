@@ -6,9 +6,9 @@ import (
 	"go/ast"
 	"go/parser"
 	"go/token"
-	"html/template"
 	"io"
 	"strings"
+	"text/template"
 	"unicode"
 )
 
