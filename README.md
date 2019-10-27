@@ -16,23 +16,9 @@ make install
 ```
 
 ## Usage
-```text
-Go code generation tool. Prints output to stdout
-
-Usage:
-  go-codegen [command]
-
-Available Commands:
-  generic     Processes go source as generic file and outputs code with substituted type vars
-  help        Help about any command
-  immutable   Generates immutable implementation by a given interface.
-
-Flags:
-  -f, --file string   input file name (reqiured)
-  -h, --help          help for go-codegen
-  -p, --pkg string    Golang package name. Substitutes existing package name or makes generator to add one
-
-Use "go-codegen [command] --help" for more information about a command.
+```bash
+# Prints help
+$ go-codegen -h
 ```
 
 ### Generics
