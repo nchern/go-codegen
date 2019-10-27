@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/nchern/go-codegen/pkg/code"
+	"github.com/nchern/go-codegen/pkg/constructor"
 	"github.com/nchern/go-codegen/pkg/generic"
 	"github.com/nchern/go-codegen/pkg/immutable"
 	"github.com/spf13/cobra"
@@ -58,6 +59,17 @@ var (
 				err := code.WrapWithBannerPrinter(
 					immutable.FromFile(filename).
 						WithPackageName(pkgName)).
+					Generate(os.Stdout)
+				dieIf(err)
+			},
+		},
+		{
+			Use:   "struct",
+			Short: "Generates initializer func for a given struct read from stdin",
+			Args:  cobra.NoArgs,
+			Run: func(cmd *cobra.Command, args []string) {
+				err := constructor.FromReader(os.Stdin).
+					WithPackageName(pkgName).
 					Generate(os.Stdout)
 				dieIf(err)
 			},

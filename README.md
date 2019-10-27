@@ -60,4 +60,3 @@ An experiment. Inspired by Java Immutables. See more examples in [test code](tes
 ## Nice to have
 
  * Integration with [gen](http://alikewise.com/gen/)
-
