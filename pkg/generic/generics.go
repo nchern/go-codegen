@@ -15,17 +15,17 @@ import (
 type TypeVar string
 
 const (
-	// T0
+	// T0 generic type name
 	T0 TypeVar = "T0"
-	// T1
+	// T1 generic type name
 	T1 TypeVar = "T1"
-	// T2
+	// T2 generic type name
 	T2 TypeVar = "T2"
-	// T3
+	// T3 generic type name
 	T3 TypeVar = "T3"
-	// T4
+	// T4 generic type name
 	T4 TypeVar = "T4"
-	// T5
+	// T5 generic type name
 	T5 TypeVar = "T5"
 )
 
