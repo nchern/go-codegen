@@ -29,6 +29,8 @@ var (
 
 	flagBuiltInType = ""
 
+	flagEditorMode = false
+
 	commands = []*cobra.Command{
 		{
 			Use:   "generic [list of concrete types to substitute type vars]",
@@ -70,6 +72,7 @@ var (
 			Run: func(cmd *cobra.Command, args []string) {
 				err := constructor.FromReader(os.Stdin).
 					WithPackageName(flagPkgName).
+					WithOutputSrc(flagEditorMode).
 					Generate(os.Stdout)
 				dieIf(err)
 			},
@@ -78,7 +81,6 @@ var (
 )
 
 func main() {
-
 	rootCmd := &cobra.Command{
 		Use:  "go-codegen",
 		Long: "Go code generation tool. Prints output to stdout",
@@ -89,6 +91,8 @@ func main() {
 
 	commands[0].Flags().StringVarP(&flagBuiltInType, "type", "t", "",
 		fmt.Sprintf("Generates based on predefined generic file. One of: %s", strings.Join(generic.BuiltInTypes(), ", ")))
+
+	commands[2].Flags().BoolVarP(&flagEditorMode, "editor-mode", "e", false, "if set, outputs the input snippet before generated initializer. Helpful with vim integrations")
 
 	for _, cmd := range commands {
 		rootCmd.AddCommand(cmd)

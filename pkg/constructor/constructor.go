@@ -28,6 +28,7 @@ const (
 type Generator interface {
 	WithPackageName(name string) Generator
 	Generate(w io.Writer) error
+	WithOutputSrc(bool) Generator
 }
 
 type field struct {
@@ -79,6 +80,12 @@ func FromReader(r io.Reader) Generator {
 // WithPackageName sets the pkg name
 func (g *structInitGenerator) WithPackageName(name string) Generator {
 	g.pkgName = name
+	return g
+}
+
+// WithOutputSrc sets the flag outputSrc
+func (g *structInitGenerator) WithOutputSrc(outputSrc bool) Generator {
+	g.outputSrc = outputSrc
 	return g
 }
 
@@ -138,6 +145,9 @@ func (g *structInitGenerator) Generate(w io.Writer) error {
 }
 
 func (g *structInitGenerator) printInputSourceIfRequired(w io.Writer, src string) error {
+	if !g.outputSrc {
+		return nil
+	}
 	if _, err := io.WriteString(w, strings.TrimPrefix(src, packageHeader)); err != nil {
 		return err
 	}

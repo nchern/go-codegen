@@ -30,7 +30,20 @@ func NewFoo(bar string, bazz float64) *Foo {
 	err := FromReader(bytes.NewBufferString(source)).Generate(&actual)
 
 	assert.NoError(t, err)
+	assert.Equal(t, strings.Trim(expected, "\n"), actual.String())
+}
 
-	expected = source + expected
+func TestShouldOutputSource(t *testing.T) {
+	source := `type Foo struct {}`
+
+	expected := source + "\n" + `func NewFoo() *Foo {
+	return &Foo{
+	}
+}`
+
+	var actual bytes.Buffer
+	err := FromReader(bytes.NewBufferString(source)).WithOutputSrc(true).Generate(&actual)
+
+	assert.NoError(t, err)
 	assert.Equal(t, strings.Trim(expected, "\n"), actual.String())
 }
