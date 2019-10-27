@@ -10,6 +10,7 @@ const (
 	repoUrl = "https://github.com/nchern/go-codegen"
 )
 
+// Generator
 type Generator interface {
 	Generate(io.Writer) error
 }
@@ -29,6 +30,7 @@ func (g *bannerPrinter) Generate(w io.Writer) error {
 	return g.decorated.Generate(w)
 }
 
+// WrapWithBannerPrinter wraps given generator with printer
 func WrapWithBannerPrinter(g Generator) Generator {
 	return &bannerPrinter{decorated: g}
 }

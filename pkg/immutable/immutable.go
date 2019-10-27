@@ -116,6 +116,7 @@ type immutableGenerator struct {
 	filename string
 }
 
+// FromFile returns Generator from given file
 func FromFile(filename string) Generator {
 	return &immutableGenerator{
 		filename: filename,
