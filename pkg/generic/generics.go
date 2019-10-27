@@ -11,14 +11,21 @@ import (
 	"strings"
 )
 
+// TypeVar indicates generic type var
 type TypeVar string
 
 const (
+	// T0
 	T0 TypeVar = "T0"
+	// T1
 	T1 TypeVar = "T1"
+	// T2
 	T2 TypeVar = "T2"
+	// T3
 	T3 TypeVar = "T3"
+	// T4
 	T4 TypeVar = "T4"
+	// T5
 	T5 TypeVar = "T5"
 )
 
@@ -32,16 +39,14 @@ var (
 		T5: true,
 	}
 
+	// ErrBadTypeVar indicates that type var is unsupported
 	ErrBadTypeVar = errors.New("Bad type variable")
 )
 
-type Args struct {
-	Filename    string
-	PackageName string
-}
-
+// TypeMap maps type vars
 type TypeMap map[TypeVar]string
 
+// TypeMapFromStrings returns TypeMap filled with given type var names
 func TypeMapFromStrings(types ...string) TypeMap {
 	res := TypeMap{}
 	for i, v := range types {
@@ -124,6 +129,7 @@ type genericProcessor struct {
 	packageName string
 }
 
+// FromFile returns Generator from a given file
 func FromFile(filename string) Generator {
 	return &genericProcessor{
 		src:      nil,
@@ -131,6 +137,7 @@ func FromFile(filename string) Generator {
 	}
 }
 
+// FromBytes returns Generator from byte source
 func FromBytes(src []byte) Generator {
 	return &genericProcessor{
 		src: src,
