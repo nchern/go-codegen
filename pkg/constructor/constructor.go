@@ -48,8 +48,6 @@ func (f *field) LName() string {
 			return r
 		},
 		f.Name)
-
-	return strings.ToLower(f.Name)
 }
 
 func join(fields []field, sep string) string {
