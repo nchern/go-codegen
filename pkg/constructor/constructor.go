@@ -62,6 +62,10 @@ func join(fields []field, sep string) string {
 	return strings.Join(res, sep)
 }
 
+func typeToString(expr ast.Expr, src string) string {
+	return src[expr.Pos()-1 : expr.End()-1]
+}
+
 type typeInfo struct {
 	Name   string
 	Fields []field
@@ -131,7 +135,7 @@ func (g *structInitGenerator) Generate(w io.Writer) error {
 					}
 					info.Fields = append(info.Fields, field{
 						Name: f.Names[0].String(),
-						Type: fmt.Sprintf("%s", f.Type),
+						Type: typeToString(f.Type, src),
 					})
 				}
 				structs = append(structs, info)

@@ -33,6 +33,39 @@ func NewFoo(bar string, bazz float64) *Foo {
 	assert.Equal(t, strings.Trim(expected, "\n"), actual.String())
 }
 
+func TestShouldGenerateComplextTypes(t *testing.T) {
+	source := `type Foo struct {
+	Bar string
+	Bazz interface{}
+	Boom Phone
+	FooBar []int
+	FooBarBazz []interface{}
+	Ptr *User
+	Friends []*User
+	Mapping map[string]interface{}
+}`
+
+	expected := `
+func NewFoo(bar string, bazz interface{}, boom Phone, fooBar []int, fooBarBazz []interface{}, ptr *User, friends []*User, mapping map[string]interface{}) *Foo {
+	return &Foo{
+		Bar: bar,
+		Bazz: bazz,
+		Boom: boom,
+		FooBar: fooBar,
+		FooBarBazz: fooBarBazz,
+		Ptr: ptr,
+		Friends: friends,
+		Mapping: mapping,
+	}
+}`
+
+	var actual bytes.Buffer
+	err := FromReader(bytes.NewBufferString(source)).Generate(&actual)
+
+	assert.NoError(t, err)
+	assert.Equal(t, strings.Trim(expected, "\n"), actual.String())
+}
+
 func TestShouldGenerateWithOutputSource(t *testing.T) {
 	source := `type Foo struct {}`
 
