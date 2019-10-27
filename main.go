@@ -29,7 +29,7 @@ var (
 
 	flagBuiltInType = ""
 
-	flagEditorMode = false
+	flagOutputSource = false
 
 	commands = []*cobra.Command{
 		{
@@ -66,13 +66,13 @@ var (
 			},
 		},
 		{
-			Use:   "struct",
-			Short: "Generates initializer func for a given struct read from stdin",
+			Use:   "constructor",
+			Short: "Generates constructor function for a given struct read from stdin",
 			Args:  cobra.NoArgs,
 			Run: func(cmd *cobra.Command, args []string) {
 				err := constructor.FromReader(os.Stdin).
 					WithPackageName(flagPkgName).
-					WithOutputSrc(flagEditorMode).
+					WithOutputSrc(flagOutputSource).
 					Generate(os.Stdout)
 				dieIf(err)
 			},
@@ -92,7 +92,7 @@ func main() {
 	commands[0].Flags().StringVarP(&flagBuiltInType, "type", "t", "",
 		fmt.Sprintf("Generates based on predefined generic file. One of: %s", strings.Join(generic.BuiltInTypes(), ", ")))
 
-	commands[2].Flags().BoolVarP(&flagEditorMode, "editor-mode", "e", false, "if set, outputs the input snippet before generated initializer. Helpful with vim integrations")
+	commands[2].Flags().BoolVarP(&flagOutputSource, "out-src", "s", false, "if set, outputs the input source code before generated code. Could be helpful with editor integrations(e.g. vim)")
 
 	for _, cmd := range commands {
 		rootCmd.AddCommand(cmd)

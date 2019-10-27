@@ -22,7 +22,8 @@ const (
 		{{.Name}}: {{.LName}},
 		{{- end}}
 	}
-}`
+}
+`
 )
 
 // Generator abstracts struct initializer generator
