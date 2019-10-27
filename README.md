@@ -43,6 +43,10 @@ go-codegen --pkg=model immutable -f tests/immutable/model/model.go
 
 An experiment. Inspired by Java Immutables. See more examples in [test code](tests/immutable/)
 
+### Constructor
+
+Generates constructor function for struct. More details see [here](docs/constructor.md)
+
 ## Nice to have
 
  * Integration with [gen](http://alikewise.com/gen/)
