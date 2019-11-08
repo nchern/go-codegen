@@ -71,7 +71,6 @@ var (
 			Args:  cobra.NoArgs,
 			Run: func(cmd *cobra.Command, args []string) {
 				err := constructor.FromReader(os.Stdin).
-					WithPackageName(flagPkgName).
 					WithOutputSrc(flagOutputSource).
 					Generate(os.Stdout)
 				dieIf(err)

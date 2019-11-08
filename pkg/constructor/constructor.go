@@ -26,13 +26,6 @@ const (
 `
 )
 
-// Generator abstracts struct initializer generator
-type Generator interface {
-	WithPackageName(name string) Generator
-	Generate(w io.Writer) error
-	WithOutputSrc(bool) Generator
-}
-
 type field struct {
 	Name string
 	Type string
@@ -72,31 +65,25 @@ type typeInfo struct {
 	Fields []field
 }
 
-type structInitGenerator struct {
+// StructInitGenerator implements structure initializer code generator
+type StructInitGenerator struct {
 	outputSrc bool
-	pkgName   string
 	src       io.Reader
 }
 
 // FromReader creates generator from reader
-func FromReader(r io.Reader) Generator {
-	return &structInitGenerator{src: r}
-}
-
-// WithPackageName sets the pkg name
-func (g *structInitGenerator) WithPackageName(name string) Generator {
-	g.pkgName = name
-	return g
+func FromReader(r io.Reader) *StructInitGenerator {
+	return &StructInitGenerator{src: r}
 }
 
 // WithOutputSrc sets the flag outputSrc
-func (g *structInitGenerator) WithOutputSrc(outputSrc bool) Generator {
+func (g *StructInitGenerator) WithOutputSrc(outputSrc bool) *StructInitGenerator {
 	g.outputSrc = outputSrc
 	return g
 }
 
 // Generate generates the code
-func (g *structInitGenerator) Generate(w io.Writer) error {
+func (g *StructInitGenerator) Generate(w io.Writer) error {
 	src, err := g.readAndPrepareSource()
 	if err != nil {
 		return err
@@ -157,7 +144,7 @@ func (g *structInitGenerator) Generate(w io.Writer) error {
 	return nil
 }
 
-func (g *structInitGenerator) printInputSourceIfRequired(w io.Writer, src string) error {
+func (g *StructInitGenerator) printInputSourceIfRequired(w io.Writer, src string) error {
 	if !g.outputSrc {
 		return nil
 	}
@@ -168,7 +155,7 @@ func (g *structInitGenerator) printInputSourceIfRequired(w io.Writer, src string
 	return err
 }
 
-func (g *structInitGenerator) readAndPrepareSource() (string, error) {
+func (g *StructInitGenerator) readAndPrepareSource() (string, error) {
 	srcBytes, err := ioutil.ReadAll(g.src)
 	if err != nil {
 		return "", err

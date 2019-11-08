@@ -105,7 +105,7 @@ func (t *typeInfo) generate(lines []string, w io.Writer) {
 	}
 }
 
-// ImmutableGenerator encapsulates logic of immutables genetation
+// ImmutableGenerator implements immutables code generator
 type ImmutableGenerator struct {
 	pkgName  string
 	filename string
