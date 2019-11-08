@@ -65,25 +65,25 @@ type typeInfo struct {
 	Fields []field
 }
 
-// StructInitGenerator implements structure initializer code generator
-type StructInitGenerator struct {
+// Generator implements structure initializer code generator
+type Generator struct {
 	outputSrc bool
 	src       io.Reader
 }
 
 // FromReader creates generator from reader
-func FromReader(r io.Reader) *StructInitGenerator {
-	return &StructInitGenerator{src: r}
+func FromReader(r io.Reader) *Generator {
+	return &Generator{src: r}
 }
 
 // WithOutputSrc sets the flag outputSrc
-func (g *StructInitGenerator) WithOutputSrc(outputSrc bool) *StructInitGenerator {
+func (g *Generator) WithOutputSrc(outputSrc bool) *Generator {
 	g.outputSrc = outputSrc
 	return g
 }
 
 // Generate generates the code
-func (g *StructInitGenerator) Generate(w io.Writer) error {
+func (g *Generator) Generate(w io.Writer) error {
 	src, err := g.readAndPrepareSource()
 	if err != nil {
 		return err
@@ -144,7 +144,7 @@ func (g *StructInitGenerator) Generate(w io.Writer) error {
 	return nil
 }
 
-func (g *StructInitGenerator) printInputSourceIfRequired(w io.Writer, src string) error {
+func (g *Generator) printInputSourceIfRequired(w io.Writer, src string) error {
 	if !g.outputSrc {
 		return nil
 	}
@@ -155,7 +155,7 @@ func (g *StructInitGenerator) printInputSourceIfRequired(w io.Writer, src string
 	return err
 }
 
-func (g *StructInitGenerator) readAndPrepareSource() (string, error) {
+func (g *Generator) readAndPrepareSource() (string, error) {
 	srcBytes, err := ioutil.ReadAll(g.src)
 	if err != nil {
 		return "", err
