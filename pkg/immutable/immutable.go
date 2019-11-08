@@ -105,30 +105,27 @@ func (t *typeInfo) generate(lines []string, w io.Writer) {
 	}
 }
 
-// Generator abstracts immutable generator
-type Generator interface {
-	WithPackageName(name string) Generator
-	Generate(w io.Writer) error
-}
-
-type immutableGenerator struct {
+// ImmutableGenerator encapsulates logic of immutables genetation
+type ImmutableGenerator struct {
 	pkgName  string
 	filename string
 }
 
-// FromFile returns Generator from given file
-func FromFile(filename string) Generator {
-	return &immutableGenerator{
+// FromFile returns ImmutableGenerator from given file
+func FromFile(filename string) *ImmutableGenerator {
+	return &ImmutableGenerator{
 		filename: filename,
 	}
 }
 
-func (g *immutableGenerator) WithPackageName(name string) Generator {
+// WithPackageName sets the package name
+func (g *ImmutableGenerator) WithPackageName(name string) *ImmutableGenerator {
 	g.pkgName = name
 	return g
 }
 
-func (g *immutableGenerator) Generate(w io.Writer) error {
+// Generate generates immutable struct anb builder from a given interface
+func (g *ImmutableGenerator) Generate(w io.Writer) error {
 	immutables := []typeInfo{}
 
 	fset := token.NewFileSet()
