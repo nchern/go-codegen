@@ -3,11 +3,16 @@ package code
 import (
 	"fmt"
 	"io"
+	"io/ioutil"
+	"strings"
 )
 
 const (
 	appName = "go-codegen"
 	repoURL = "https://github.com/nchern/go-codegen"
+
+	// PackageMain contains package main declaration string
+	PackageMain = "package main\n"
 )
 
 // Generator defines interface that generates sources
@@ -33,4 +38,17 @@ func (g *bannerPrinter) Generate(w io.Writer) error {
 // WrapWithBannerPrinter wraps given generator with printer
 func WrapWithBannerPrinter(g Generator) Generator {
 	return &bannerPrinter{decorated: g}
+}
+
+// ReadAndPreparePartialSource reads sources from a givven reader and prepends a package declaration if needed
+func ReadAndPreparePartialSource(r io.Reader) (string, error) {
+	srcBytes, err := ioutil.ReadAll(r)
+	if err != nil {
+		return "", err
+	}
+	src := string(srcBytes)
+	if !strings.HasPrefix(src, "package ") {
+		src = PackageMain + src
+	}
+	return src, nil
 }

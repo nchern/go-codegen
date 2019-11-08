@@ -7,15 +7,14 @@ import (
 	"go/scanner"
 	"go/token"
 	"io"
-	"io/ioutil"
 	"strings"
 	"text/template"
 	"unicode"
+
+	"github.com/nchern/go-codegen/pkg/code"
 )
 
 const (
-	packageHeader = "package main\n"
-
 	initializerTpl = `func New{{.Name}}({{ join .Fields ", "}}) *{{.Name}} {
 	return &{{.Name}}{
 		{{- range .Fields}}
@@ -84,7 +83,7 @@ func (g *Generator) WithOutputSrc(outputSrc bool) *Generator {
 
 // Generate generates the code
 func (g *Generator) Generate(w io.Writer) error {
-	src, err := g.readAndPrepareSource()
+	src, err := code.ReadAndPreparePartialSource(g.src)
 	if err != nil {
 		return err
 	}
@@ -148,21 +147,9 @@ func (g *Generator) printInputSourceIfRequired(w io.Writer, src string) error {
 	if !g.outputSrc {
 		return nil
 	}
-	if _, err := io.WriteString(w, strings.TrimPrefix(src, packageHeader)); err != nil {
+	if _, err := io.WriteString(w, strings.TrimPrefix(src, code.PackageMain)); err != nil {
 		return err
 	}
 	_, err := fmt.Fprintln(w)
 	return err
-}
-
-func (g *Generator) readAndPrepareSource() (string, error) {
-	srcBytes, err := ioutil.ReadAll(g.src)
-	if err != nil {
-		return "", err
-	}
-	src := string(srcBytes)
-	if !strings.HasPrefix(src, "package ") {
-		src = packageHeader + src
-	}
-	return src, nil
 }
