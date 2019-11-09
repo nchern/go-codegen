@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestShouldGenerateSimpleTypes(t *testing.T) {
+func TestShouldGenerateWithSimpleTypedFields(t *testing.T) {
 	source := `type Foo struct {
 	Bar string
 	Bazz float64
@@ -30,7 +30,7 @@ func TestShouldGenerateSimpleTypes(t *testing.T) {
 	assert.Equal(t, expected, actual.String())
 }
 
-func TestShouldGenerateComplextTypes(t *testing.T) {
+func TestShouldGenerateWitgComplextTypedFields(t *testing.T) {
 	source := `type Foo struct {
 	Bar string
 	Bazz interface{}
@@ -39,9 +39,10 @@ func TestShouldGenerateComplextTypes(t *testing.T) {
 	Ptr *User
 	Friends []*User
 	Mapping map[string]interface{}
+	PtrMapping map[float64]*User
 }`
 
-	expected := `func NewFoo(bar string, bazz interface{}, fooBar []int, fooBarBazz []interface{}, ptr *User, friends []*User, mapping map[string]interface{}) *Foo {
+	expected := `func NewFoo(bar string, bazz interface{}, fooBar []int, fooBarBazz []interface{}, ptr *User, friends []*User, mapping map[string]interface{}, ptrMapping map[float64]*User) *Foo {
 	return &Foo{
 		Bar: bar,
 		Bazz: bazz,
@@ -50,6 +51,7 @@ func TestShouldGenerateComplextTypes(t *testing.T) {
 		Ptr: ptr,
 		Friends: friends,
 		Mapping: mapping,
+		PtrMapping: ptrMapping,
 	}
 }
 `
@@ -61,7 +63,7 @@ func TestShouldGenerateComplextTypes(t *testing.T) {
 	assert.Equal(t, expected, actual.String())
 }
 
-func TestShouldGenerateWithOutputSource(t *testing.T) {
+func TestShouldGenerateWithSourceOutput(t *testing.T) {
 	source := `type Foo struct {}`
 
 	expected := source + "\n" + `func NewFoo() *Foo {
