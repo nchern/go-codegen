@@ -47,7 +47,7 @@ var (
 			Args:  cobra.MinimumNArgs(1),
 			Run: func(cmd *cobra.Command, args []string) {
 				var err error
-				var generator generic.Generator
+				var generator *generic.Generator
 				if flagBuiltInType != "" {
 					generator, err = generic.BuiltIn(flagBuiltInType)
 					dieIf(err)

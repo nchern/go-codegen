@@ -114,14 +114,8 @@ func (m TypeMap) stripTypeVarsDecls(node *ast.File) {
 	}
 }
 
-// Generator represents abstract generic processor
-type Generator interface {
-	WithPackageName(name string) Generator
-	WithTypeMapping(TypeMap) Generator
-	Generate(io.Writer) error
-}
-
-type genericProcessor struct {
+// Generator implements a generic code generator
+type Generator struct {
 	typeVars TypeMap
 
 	src         interface{}
@@ -130,30 +124,34 @@ type genericProcessor struct {
 }
 
 // FromFile returns Generator from a given file
-func FromFile(filename string) Generator {
-	return &genericProcessor{
+func FromFile(filename string) *Generator {
+	return &Generator{
 		src:      nil,
 		filename: filename,
 	}
 }
 
 // FromBytes returns Generator from byte source
-func FromBytes(src []byte) Generator {
-	return &genericProcessor{
+func FromBytes(src []byte) *Generator {
+	return &Generator{
 		src: src,
 	}
 }
 
-func (g *genericProcessor) WithPackageName(name string) Generator {
+// WithPackageName sets the package name
+func (g *Generator) WithPackageName(name string) *Generator {
 	g.packageName = name
 	return g
 }
-func (g *genericProcessor) WithTypeMapping(typeVars TypeMap) Generator {
+
+// WithTypeMapping sets type vars mapping to concrete types
+func (g *Generator) WithTypeMapping(typeVars TypeMap) *Generator {
 	g.typeVars = typeVars
 	return g
 }
 
-func (g *genericProcessor) Generate(w io.Writer) error {
+// Generate generates implementation based on generic code and writes it to the Writer
+func (g *Generator) Generate(w io.Writer) error {
 	for k := range g.typeVars {
 		if !allowedTypeVars[k] {
 			return ErrBadTypeVar

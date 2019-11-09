@@ -12,7 +12,7 @@ func BuiltInTypes() []string {
 }
 
 // BuiltIn return a generator object by a given built-in type name
-func BuiltIn(typeName string) (Generator, error) {
+func BuiltIn(typeName string) (*Generator, error) {
 	src, err := Asset(filepath.Join(typeName, typeName+".go"))
 	if err != nil {
 		return nil, err

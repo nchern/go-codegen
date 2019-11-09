@@ -28,7 +28,7 @@ func ({{$.Reciever}} *{{$.StructName}}) {{.}} {
 // TODO: set  custom stub struct name
 // TODO: generate default returns based on return types
 
-// Generator implements an interfacer implenetation code generator
+// Generator implements an interface implenetation code generator
 type Generator struct {
 	src io.Reader
 }
