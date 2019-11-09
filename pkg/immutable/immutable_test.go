@@ -19,9 +19,14 @@ const (
 	func (m *valueStruct) SomeValue() int { return m.SomeValueField }
 
 	type ImmutableValueBuilder struct { value *valueStruct }
+	// NewValueBuilder creates new ImmutableValueBuilder builder
 	func NewValueBuilder() *ImmutableValueBuilder { return &ImmutableValueBuilder{ &valueStruct{} } }
+	// SomeName sets corresponding field value
 	func (b *ImmutableValueBuilder) SomeName(SomeNameField string) *ImmutableValueBuilder { b.value.SomeNameField = SomeNameField; return b }
+	// SomeValue sets corresponding field value
 	func (b *ImmutableValueBuilder) SomeValue(SomeValueField int) *ImmutableValueBuilder { b.value.SomeValueField = SomeValueField; return b }
+
+	// Build builds the immutable structure
 	func (b ImmutableValueBuilder) Build() Value { ret := *b.value; return &ret }`
 )
 
@@ -58,7 +63,7 @@ func TestMethodStruct(t *testing.T) {
 	assert.Equal(t, "func (m *Obj) Foo() int64 { return m.FooField }",
 		inTest.generateImmutableSetter("Obj"))
 
-	assert.Equal(t, "func (b *ObjBuilder) Foo(FooField int64) *ObjBuilder { b.value.FooField = FooField; return b }",
+	assert.Equal(t, "// Foo sets corresponding field value\nfunc (b *ObjBuilder) Foo(FooField int64) *ObjBuilder { b.value.FooField = FooField; return b }",
 		inTest.generateBuilderSetter("ObjBuilder"))
 }
 

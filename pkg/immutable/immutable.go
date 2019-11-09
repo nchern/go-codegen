@@ -56,8 +56,8 @@ func (m *method) generateImmutableSetter(structName string) string {
 
 func (m *method) generateBuilderSetter(builderTypeName string) string {
 	immutableFieldName := m.FieldName()
-	return fmt.Sprintf("func (b *%s) %s(%s %s) *%s { b.value.%s = %s; return b }",
-		builderTypeName, m.Name, immutableFieldName, m.RetValue, builderTypeName, immutableFieldName, immutableFieldName)
+	return fmt.Sprintf("// %s sets corresponding field value\nfunc (b *%s) %s(%s %s) *%s { b.value.%s = %s; return b }",
+		m.Name, builderTypeName, m.Name, immutableFieldName, m.RetValue, builderTypeName, immutableFieldName, immutableFieldName)
 }
 
 type typeInfo struct {
@@ -89,12 +89,15 @@ func (t *typeInfo) generateImmutableStruct(w io.Writer) {
 func (t *typeInfo) generateImmutableBuilder(w io.Writer) {
 	lines := []string{
 		"type {{.BuilderName}} struct { value *{{.StructName}} }",
+		"// New{{.Name}}Builder creates new {{.BuilderName}} builder",
 		"func New{{.Name}}Builder() *{{.BuilderName}} { return &{{.BuilderName}}{ &{{.StructName}}{} } }",
 	}
 	for _, m := range t.Methods {
 		lines = append(lines, m.generateBuilderSetter(t.BuilderName()))
 	}
-	lines = append(lines, "func (b {{.BuilderName}}) Build() {{.Name}} { ret := *b.value; return &ret }")
+	lines = append(lines,
+		"// Build builds the immutable structure",
+		"func (b {{.BuilderName}}) Build() {{.Name}} { ret := *b.value; return &ret }")
 	t.generate(lines, w)
 }
 
