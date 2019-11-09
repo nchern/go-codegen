@@ -1,6 +1,7 @@
 package testutil
 
 import (
+	"fmt"
 	"go/format"
 	"io/ioutil"
 	"os"
@@ -13,7 +14,7 @@ import (
 func formatSrc(src string) string {
 	res, err := format.Source([]byte(src))
 	if err != nil {
-		panic(err)
+		panic(fmt.Sprintf("'%s' while formatting:\n%s", err, src))
 	}
 	return strings.TrimSpace(string(res))
 }

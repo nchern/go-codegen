@@ -11,8 +11,8 @@ import (
 func TestShouldGenerateImplementation(t *testing.T) {
 	source := `
 type TestInterface interface {
-	Foo() int
-	Bar() CustomStruct
+	Foo(u *User) int
+	Bar(a int, b float64) CustomStruct
 	FooBar() interface{}
 	Fuzz() []*CustomStruct
 }`
@@ -20,11 +20,11 @@ type TestInterface interface {
 	expected := `
 type testInterface struct {}
 
-func (t *testInterface) Foo() int {
+func (t *testInterface) Foo(u *User) int {
 	panic("Not implemented")
 }
 
-func (t *testInterface) Bar() CustomStruct {
+func (t *testInterface) Bar(a int, b float64) CustomStruct {
 	panic("Not implemented")
 }
 
@@ -63,4 +63,47 @@ func TestShouldGenerateNothingOnUnsupportedTypes(t *testing.T) {
 			assert.Equal(t, "", actual.String())
 		})
 	}
+}
+
+func TestShouldGenerateMethodsWithCommentsIfCommentsWereProvided(t *testing.T) {
+	source := `
+type TestInterface interface {
+	// Foo has a single line comment
+	Foo() int
+	// Bar has
+	// two single line comments
+	Bar(i int) string
+	/*
+		Buzz has multi-
+		line comment
+	*/
+	Buzz()
+}`
+
+	expected := `
+type testInterface struct {}
+
+// Foo has a single line comment
+func (t *testInterface) Foo() int {
+	panic("Not implemented")
+}
+
+// Bar has
+// two single line comments
+func (t *testInterface) Bar(i int) string {
+	panic("Not implemented")
+}
+
+/*
+	Buzz has multi-
+	line comment
+*/
+func (t *testInterface) Buzz() {
+	panic("Not implemented")
+}`
+	var actual bytes.Buffer
+	err := FromReader(bytes.NewBufferString(source)).Generate(&actual)
+	assert.NoError(t, err)
+
+	testutil.AssertCodeIsSame(t, expected, actual.String())
 }

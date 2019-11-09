@@ -16,9 +16,10 @@ const (
 	implTpl = `
 type {{.StructName}} struct {}
 
-{{- range .MethodSignatures}}
+{{- range .Methods}}
 
-func ({{$.Reciever}} *{{$.StructName}}) {{.}} {
+{{ .Comments }}
+func ({{$.Reciever}} *{{$.StructName}}) {{.Signature}} {
 	panic("Not implemented")
 }
 {{- end}}
@@ -72,7 +73,11 @@ func (g *Generator) Generate(w io.Writer) error {
 						err = errors.New("Unsupported method signature: empty names")
 						return false
 					}
-					iface.MethodSignatures = append(iface.MethodSignatures, src[m.Pos()-1:m.End()-1])
+					mInfo := methodInfo{Signature: src[m.Pos()-1 : m.End()-1]}
+					if m.Doc != nil {
+						mInfo.Comments = src[m.Doc.Pos()-1 : m.Doc.End()-1]
+					}
+					iface.Methods = append(iface.Methods, mInfo)
 				}
 
 				interfaces = append(interfaces, iface)
@@ -94,9 +99,14 @@ func (g *Generator) Generate(w io.Writer) error {
 	return nil
 }
 
+type methodInfo struct {
+	Comments  string
+	Signature string
+}
+
 type interfaceInfo struct {
-	Name             string
-	MethodSignatures []string
+	Name    string
+	Methods []methodInfo
 }
 
 func (i interfaceInfo) Reciever() string {
