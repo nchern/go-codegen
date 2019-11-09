@@ -12,8 +12,8 @@ import (
 
 const (
 	generatedImmutableSrc = `type valueStruct  struct {
-	SomeNameField string 'json:"some_name"'
-	SomeValueField int 'json:"some_value"'
+		SomeNameField string 'json:"some_name"'
+		SomeValueField int 'json:"some_value"'
 	}
 	func (m *valueStruct) SomeName() string { return m.SomeNameField }
 	func (m *valueStruct) SomeValue() int { return m.SomeValueField }
@@ -70,7 +70,7 @@ func TestTypeInfo(t *testing.T) {
 
 }
 
-func TestImmutableMethodHasParamsError(t *testing.T) {
+func TestShouldFailIfImmutableMethodHasParams(t *testing.T) {
 	srcText := `package immutable
 	type Value interface {
 		Foo(a int) string
@@ -84,7 +84,7 @@ func TestImmutableMethodHasParamsError(t *testing.T) {
 	assert.Equal(t, ErrUnsupportedMethodSignature, err)
 }
 
-func TestImmutableMethodHasMoreThanOneReturnParamsError(t *testing.T) {
+func TestShouldFailIfImmutableMethodHasMoreThanOneReturnParams(t *testing.T) {
 	srcText := `package immutable
 	type Value interface {
 		Foo() (string, int)
@@ -98,7 +98,7 @@ func TestImmutableMethodHasMoreThanOneReturnParamsError(t *testing.T) {
 	assert.Equal(t, ErrUnsupportedMethodSignature, err)
 }
 
-func TestImmutableWriteTo(t *testing.T) {
+func TestShouldGenerateImmutableStructAndBuilder(t *testing.T) {
 	srcText := `package immutable
 
 	type Value interface {
