@@ -47,6 +47,10 @@ An experiment. Inspired by Java Immutables. See more examples in [test code](tes
 
 Generates constructor function for struct. More details see [here](docs/constructor.md)
 
+### Impl
+
+Generates interface implementations stubs. More details see [here](docs/impl.md)
+
 ## Nice to have
 
  * Integration with [gen](http://alikewise.com/gen/)
