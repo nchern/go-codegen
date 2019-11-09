@@ -2,12 +2,11 @@ package impl
 
 import (
 	"errors"
-	"fmt"
 	"go/ast"
 	"go/parser"
+	"go/scanner"
 	"go/token"
 	"io"
-	"strings"
 	"text/template"
 
 	"github.com/nchern/go-codegen/pkg/code"
@@ -31,8 +30,7 @@ func ({{$.Reciever}} *{{$.StructName}}) {{.}} {
 
 // Generator implements an interfacer implenetation code generator
 type Generator struct {
-	outputSrc bool
-	src       io.Reader
+	src io.Reader
 }
 
 // FromReader returns ImplementationGenerator that reads source from provided reader
@@ -40,12 +38,6 @@ func FromReader(r io.Reader) *Generator {
 	return &Generator{
 		src: r,
 	}
-}
-
-// WithOutputSrc sets the flag outputSrc
-func (g *Generator) WithOutputSrc(outputSrc bool) *Generator {
-	g.outputSrc = outputSrc
-	return g
 }
 
 // Generate generates implenetation of a given interface(s)
@@ -57,13 +49,13 @@ func (g *Generator) Generate(w io.Writer) error {
 		return err
 	}
 
-	if err := g.printInputSourceIfRequired(w, src); err != nil {
-		return err
-	}
-
 	fset := token.NewFileSet()
 	node, err := parser.ParseFile(fset, "stdin", src, parser.ParseComments)
 	if err != nil {
+		if _, ok := err.(scanner.ErrorList); ok {
+			// Just ignoer syntax errors - nothing to generate from broken snippet
+			return nil
+		}
 		return err
 	}
 
@@ -100,17 +92,6 @@ func (g *Generator) Generate(w io.Writer) error {
 	}
 
 	return nil
-}
-
-func (g *Generator) printInputSourceIfRequired(w io.Writer, src string) error {
-	if !g.outputSrc {
-		return nil
-	}
-	if _, err := io.WriteString(w, strings.TrimPrefix(src, code.PackageMain)); err != nil {
-		return err
-	}
-	_, err := fmt.Fprintln(w)
-	return err
 }
 
 type interfaceInfo struct {

@@ -4,17 +4,20 @@ import (
 	"bytes"
 	"testing"
 
+	"github.com/nchern/go-codegen/pkg/testutil"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestShouldGenerateWithSimpleTypedFields(t *testing.T) {
-	source := `type Foo struct {
+	source := `
+type Foo struct {
 	Bar string
 	Bazz float64
 	Fuzz Phone
 }`
 
-	expected := `func NewFoo(bar string, bazz float64, fuzz Phone) *Foo {
+	expected := `
+func NewFoo(bar string, bazz float64, fuzz Phone) *Foo {
 	return &Foo{
 		Bar: bar,
 		Bazz: bazz,
@@ -27,11 +30,12 @@ func TestShouldGenerateWithSimpleTypedFields(t *testing.T) {
 	err := FromReader(bytes.NewBufferString(source)).Generate(&actual)
 
 	assert.NoError(t, err)
-	assert.Equal(t, expected, actual.String())
+	assert.Equal(t, testutil.FormatSrc(expected), testutil.FormatSrc(actual.String()))
 }
 
 func TestShouldGenerateWitgComplextTypedFields(t *testing.T) {
-	source := `type Foo struct {
+	source := `
+type Foo struct {
 	Bar string
 	Bazz interface{}
 	FooBar []int
@@ -42,7 +46,8 @@ func TestShouldGenerateWitgComplextTypedFields(t *testing.T) {
 	PtrMapping map[float64]*User
 }`
 
-	expected := `func NewFoo(bar string, bazz interface{}, fooBar []int, fooBarBazz []interface{}, ptr *User, friends []*User, mapping map[string]interface{}, ptrMapping map[float64]*User) *Foo {
+	expected := `
+func NewFoo(bar string, bazz interface{}, fooBar []int, fooBarBazz []interface{}, ptr *User, friends []*User, mapping map[string]interface{}, ptrMapping map[float64]*User) *Foo {
 	return &Foo{
 		Bar: bar,
 		Bazz: bazz,
@@ -60,23 +65,7 @@ func TestShouldGenerateWitgComplextTypedFields(t *testing.T) {
 	err := FromReader(bytes.NewBufferString(source)).Generate(&actual)
 
 	assert.NoError(t, err)
-	assert.Equal(t, expected, actual.String())
-}
-
-func TestShouldGenerateWithSourceOutput(t *testing.T) {
-	source := `type Foo struct {}`
-
-	expected := source + "\n" + `func NewFoo() *Foo {
-	return &Foo{
-	}
-}
-`
-
-	var actual bytes.Buffer
-	err := FromReader(bytes.NewBufferString(source)).WithOutputSrc(true).Generate(&actual)
-
-	assert.NoError(t, err)
-	assert.Equal(t, expected, actual.String())
+	assert.Equal(t, testutil.FormatSrc(expected), testutil.FormatSrc(actual.String()))
 }
 
 func TestShouldGenerateNothingOnUnsupportedTypes(t *testing.T) {

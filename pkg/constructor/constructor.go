@@ -1,7 +1,6 @@
 package constructor
 
 import (
-	"fmt"
 	"go/ast"
 	"go/parser"
 	"go/scanner"
@@ -14,7 +13,8 @@ import (
 )
 
 const (
-	initializerTpl = `func New{{.Name}}({{ join .Fields ", "}}) *{{.Name}} {
+	initializerTpl = `
+func New{{.Name}}({{ join .Fields ", "}}) *{{.Name}} {
 	return &{{.Name}}{
 		{{- range .Fields}}
 		{{.Name}}: {{.LName}},
@@ -56,19 +56,12 @@ type typeInfo struct {
 
 // Generator implements structure initializer code generator
 type Generator struct {
-	outputSrc bool
-	src       io.Reader
+	src io.Reader
 }
 
 // FromReader creates generator from reader
 func FromReader(r io.Reader) *Generator {
 	return &Generator{src: r}
-}
-
-// WithOutputSrc sets the flag outputSrc
-func (g *Generator) WithOutputSrc(outputSrc bool) *Generator {
-	g.outputSrc = outputSrc
-	return g
 }
 
 // Generate generates the code
@@ -77,20 +70,12 @@ func (g *Generator) Generate(w io.Writer) error {
 	if err != nil {
 		return err
 	}
-	if err := g.printInputSourceIfRequired(w, src); err != nil {
-		return err
-	}
 
 	fset := token.NewFileSet()
 	node, err := parser.ParseFile(fset, "stdin", src, parser.ParseComments)
 	if err != nil {
 		if _, ok := err.(scanner.ErrorList); ok {
-			// TODO: decide how to handle it without just skipping
-			// for _, v := range syntaxErr {
-			//	log.Printf("[%s] %T", v, v)
-			// }
-
-			// just do nothing if we can not parse the input - no generation will happen
+			// Just ignoer syntax errors - nothing to generate from broken snippet
 			return nil
 		}
 		return err
@@ -131,15 +116,4 @@ func (g *Generator) Generate(w io.Writer) error {
 		}
 	}
 	return nil
-}
-
-func (g *Generator) printInputSourceIfRequired(w io.Writer, src string) error {
-	if !g.outputSrc {
-		return nil
-	}
-	if _, err := io.WriteString(w, strings.TrimPrefix(src, code.PackageMain)); err != nil {
-		return err
-	}
-	_, err := fmt.Fprintln(w)
-	return err
 }

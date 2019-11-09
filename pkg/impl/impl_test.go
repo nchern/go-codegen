@@ -43,18 +43,24 @@ func (t *testInterface) Fuzz() []*CustomStruct {
 	assert.Equal(t, testutil.FormatSrc(expected), testutil.FormatSrc(actual.String()))
 }
 
-func TestShouldGenerateImplementationWithSourceOutput(t *testing.T) {
-	source := `type Foo interface {
-	}`
-
-	expected := source + "\n\n" + "type foo struct {}"
-
-	var actual bytes.Buffer
-	err := FromReader(bytes.NewBufferString(source)).WithOutputSrc(true).Generate(&actual)
-
-	assert.NoError(t, err)
-	assert.Equal(t, testutil.FormatSrc(expected), testutil.FormatSrc(actual.String()))
-}
-
 func TestShouldGenerateNothingOnUnsupportedTypes(t *testing.T) {
+	var tests = []struct {
+		name  string
+		given string
+	}{
+		{"empty", "\n"},
+		{"struct", "type Foo struct {}"},
+		{"function", "func foo() error { return nil }"},
+		{"just code", "var i = 0\nfmt.Println(i)"},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			var actual bytes.Buffer
+			err := FromReader(bytes.NewBufferString(tt.given)).Generate(&actual)
+
+			assert.NoError(t, err)
+			assert.Equal(t, "", actual.String())
+		})
+	}
 }

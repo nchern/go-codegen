@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"strings"
@@ -22,6 +23,13 @@ func dieIf(err error) {
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+func inputStream(shouldMirrorSource bool) io.Reader {
+	if shouldMirrorSource {
+		return io.TeeReader(os.Stdin, os.Stdout)
+	}
+	return os.Stdin
 }
 
 var (
@@ -71,8 +79,7 @@ var (
 			Short: "Generates constructor function for a given struct read from stdin.",
 			Args:  cobra.NoArgs,
 			Run: func(cmd *cobra.Command, args []string) {
-				err := constructor.FromReader(os.Stdin).
-					WithOutputSrc(flagOutputSource).
+				err := constructor.FromReader(inputStream(flagOutputSource)).
 					Generate(os.Stdout)
 				dieIf(err)
 			},
@@ -85,8 +92,7 @@ var (
 				"So that it's really easy to use it with editors like Vim",
 			Args: cobra.NoArgs,
 			Run: func(cmd *cobra.Command, args []string) {
-				err := impl.FromReader(os.Stdin).
-					WithOutputSrc(flagOutputSource).
+				err := impl.FromReader(inputStream(flagOutputSource)).
 					Generate(os.Stdout)
 				dieIf(err)
 			},
