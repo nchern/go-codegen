@@ -54,6 +54,7 @@ func ReadAndPreparePartialSource(r io.Reader) (string, error) {
 	return src, nil
 }
 
+// ToPackageVisibleIdentifier makes go identifier package-visible only
 func ToPackageVisibleIdentifier(name string) string {
 	isFirst := true
 	return strings.Map(
