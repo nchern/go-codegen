@@ -5,6 +5,7 @@ import (
 	"io"
 	"io/ioutil"
 	"strings"
+	"unicode"
 )
 
 const (
@@ -51,4 +52,17 @@ func ReadAndPreparePartialSource(r io.Reader) (string, error) {
 		src = PackageMain + src
 	}
 	return src, nil
+}
+
+func ToPackageVisibleIdentifier(name string) string {
+	isFirst := true
+	return strings.Map(
+		func(r rune) rune {
+			if isFirst {
+				isFirst = false
+				return unicode.ToLower(r)
+			}
+			return r
+		},
+		name)
 }

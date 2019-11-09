@@ -15,6 +15,7 @@ import (
 var (
 	// ErrBadInputType indicates that given type can not be used to generate immutable structure
 	ErrBadInputType = errors.New("Input type must be go interface")
+
 	// ErrUnsupportedMethodSignature indicates that method is not suitble to generate immutable structure
 	ErrUnsupportedMethodSignature = errors.New("Method must not be anonymous, have 0 input parameters and 1 output")
 )

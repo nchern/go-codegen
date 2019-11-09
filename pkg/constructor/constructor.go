@@ -9,7 +9,6 @@ import (
 	"io"
 	"strings"
 	"text/template"
-	"unicode"
 
 	"github.com/nchern/go-codegen/pkg/code"
 )
@@ -35,16 +34,7 @@ func (f *field) String() string {
 }
 
 func (f *field) LName() string {
-	isFirst := true
-	return strings.Map(
-		func(r rune) rune {
-			if isFirst {
-				isFirst = false
-				return unicode.ToLower(r)
-			}
-			return r
-		},
-		f.Name)
+	return code.ToPackageVisibleIdentifier(f.Name)
 }
 
 func join(fields []field, sep string) string {
