@@ -70,9 +70,11 @@ func TestShouldGenerateMethodsWithCommentsIfCommentsWereProvided(t *testing.T) {
 type TestInterface interface {
 	// Foo has a single line comment
 	Foo() int
+
 	// Bar has
 	// two single line comments
 	Bar(i int) string
+
 	/*
 		Buzz has multi-
 		line comment
