@@ -5,10 +5,12 @@ import (
 	"io/ioutil"
 	"os"
 	"strings"
+	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
-// FormatSrc formats go source
-func FormatSrc(src string) string {
+func formatSrc(src string) string {
 	res, err := format.Source([]byte(src))
 	if err != nil {
 		panic(err)
@@ -26,4 +28,9 @@ func CreateGoFile(srcText string) *os.File {
 		panic(err)
 	}
 	return file
+}
+
+// AssertCodeIsSame asserts if two code snippets are equivalent
+func AssertCodeIsSame(t *testing.T, expected string, actual string) {
+	assert.Equal(t, formatSrc(expected), formatSrc(actual))
 }

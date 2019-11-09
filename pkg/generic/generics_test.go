@@ -100,7 +100,7 @@ func TestGenericWriteToRewritesPackageName(t *testing.T) {
 		Generate(&actualBuf)
 	assert.NoError(t, err)
 
-	assert.Equal(t, testutil.FormatSrc(expectedText), testutil.FormatSrc(actualBuf.String()))
+	testutil.AssertCodeIsSame(t, expectedText, actualBuf.String())
 }
 
 func TestGenericWriteTo(t *testing.T) {
@@ -127,5 +127,5 @@ func TestGenericWriteTo(t *testing.T) {
 
 	assert.NoError(t, err)
 
-	assert.Equal(t, testutil.FormatSrc(expectedText), testutil.FormatSrc(actualBuf.String()))
+	testutil.AssertCodeIsSame(t, expectedText, actualBuf.String())
 }

@@ -40,7 +40,7 @@ func (t *testInterface) Fuzz() []*CustomStruct {
 	err := FromReader(bytes.NewBufferString(source)).Generate(&actual)
 	assert.NoError(t, err)
 
-	assert.Equal(t, testutil.FormatSrc(expected), testutil.FormatSrc(actual.String()))
+	testutil.AssertCodeIsSame(t, expected, actual.String())
 }
 
 func TestShouldGenerateNothingOnUnsupportedTypes(t *testing.T) {

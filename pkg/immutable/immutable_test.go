@@ -115,5 +115,5 @@ func TestImmutableWriteTo(t *testing.T) {
 
 	expectedSrc := strings.Replace(generatedImmutableSrc, "'", "`", -1)
 	actualSrc := strings.Trim(buf.String(), "\n")
-	assert.Equal(t, testutil.FormatSrc(expectedSrc), testutil.FormatSrc(actualSrc))
+	testutil.AssertCodeIsSame(t, expectedSrc, actualSrc)
 }

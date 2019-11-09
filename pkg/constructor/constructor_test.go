@@ -30,7 +30,7 @@ func NewFoo(bar string, bazz float64, fuzz Phone) *Foo {
 	err := FromReader(bytes.NewBufferString(source)).Generate(&actual)
 
 	assert.NoError(t, err)
-	assert.Equal(t, testutil.FormatSrc(expected), testutil.FormatSrc(actual.String()))
+	testutil.AssertCodeIsSame(t, expected, actual.String())
 }
 
 func TestShouldGenerateWitgComplextTypedFields(t *testing.T) {
@@ -65,7 +65,7 @@ func NewFoo(bar string, bazz interface{}, fooBar []int, fooBarBazz []interface{}
 	err := FromReader(bytes.NewBufferString(source)).Generate(&actual)
 
 	assert.NoError(t, err)
-	assert.Equal(t, testutil.FormatSrc(expected), testutil.FormatSrc(actual.String()))
+	testutil.AssertCodeIsSame(t, expected, actual.String())
 }
 
 func TestShouldGenerateNothingOnUnsupportedTypes(t *testing.T) {
