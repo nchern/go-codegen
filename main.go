@@ -10,6 +10,7 @@ import (
 	"github.com/nchern/go-codegen/pkg/constructor"
 	"github.com/nchern/go-codegen/pkg/generic"
 	"github.com/nchern/go-codegen/pkg/immutable"
+	"github.com/nchern/go-codegen/pkg/impl"
 	"github.com/spf13/cobra"
 )
 
@@ -55,7 +56,7 @@ var (
 		},
 		{
 			Use:   "immutable",
-			Short: "Generates immutable implementation by a given interface.",
+			Short: "Generates immutable structure implementation by a given interface.",
 			Args:  cobra.NoArgs,
 			Run: func(cmd *cobra.Command, args []string) {
 				err := code.WrapWithBannerPrinter(
@@ -71,6 +72,20 @@ var (
 			Args:  cobra.NoArgs,
 			Run: func(cmd *cobra.Command, args []string) {
 				err := constructor.FromReader(os.Stdin).
+					WithOutputSrc(flagOutputSource).
+					Generate(os.Stdout)
+				dieIf(err)
+			},
+		},
+		{
+			Use:   "impl",
+			Short: "Generates minimal interface implementation",
+			Long: "Generates stubs to implement a given interface\n" +
+				"The difference between this command and impl(https://github.com/josharian/impl) utility is that interface declaration is read from stdin.\n" +
+				"So that it's really easy to use it with editors like Vim",
+			Args: cobra.NoArgs,
+			Run: func(cmd *cobra.Command, args []string) {
+				err := impl.FromReader(os.Stdin).
 					WithOutputSrc(flagOutputSource).
 					Generate(os.Stdout)
 				dieIf(err)
@@ -92,6 +107,7 @@ func main() {
 		fmt.Sprintf("Generates based on predefined generic file. One of: %s", strings.Join(generic.BuiltInTypes(), ", ")))
 
 	commands[2].Flags().BoolVarP(&flagOutputSource, "out-src", "s", false, "if set, outputs the input source code before generated code. Could be helpful with editor integrations(e.g. vim)")
+	commands[3].Flags().BoolVarP(&flagOutputSource, "out-src", "s", false, "if set, outputs the input source code before generated code. Could be helpful with editor integrations(e.g. vim)")
 
 	for _, cmd := range commands {
 		rootCmd.AddCommand(cmd)

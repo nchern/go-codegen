@@ -4,6 +4,7 @@ import (
 	"go/format"
 	"io/ioutil"
 	"os"
+	"strings"
 )
 
 // FormatSrc formats go source
@@ -12,7 +13,7 @@ func FormatSrc(src string) string {
 	if err != nil {
 		panic(err)
 	}
-	return string(res)
+	return strings.TrimSpace(string(res))
 }
 
 // CreateGoFile creates temp file with given go code
