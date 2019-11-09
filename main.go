@@ -35,7 +35,7 @@ var (
 	commands = []*cobra.Command{
 		{
 			Use:   "generic [list of concrete types to substitute type vars]",
-			Short: "Processes go source as generic file and outputs code with substituted type vars",
+			Short: "Processes go source as generic file and outputs code with substituted type vars.",
 			Args:  cobra.MinimumNArgs(1),
 			Run: func(cmd *cobra.Command, args []string) {
 				var err error
@@ -68,7 +68,7 @@ var (
 		},
 		{
 			Use:   "constructor",
-			Short: "Generates constructor function for a given struct read from stdin",
+			Short: "Generates constructor function for a given struct read from stdin.",
 			Args:  cobra.NoArgs,
 			Run: func(cmd *cobra.Command, args []string) {
 				err := constructor.FromReader(os.Stdin).
@@ -79,7 +79,7 @@ var (
 		},
 		{
 			Use:   "impl",
-			Short: "Generates minimal interface implementation",
+			Short: "Generates minimal interface implementation.",
 			Long: "Generates stubs to implement a given interface\n" +
 				"The difference between this command and impl(https://github.com/josharian/impl) utility is that interface declaration is read from stdin.\n" +
 				"So that it's really easy to use it with editors like Vim",

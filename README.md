@@ -41,15 +41,15 @@ See [test code](tests/generic) for more examples.
 go-codegen --pkg=model immutable -f tests/immutable/model/model.go
 ```
 
-An experiment. Inspired by Java Immutables. See more examples in [test code](tests/immutable/)
+An experiment. Inspired by Java Immutables. See more examples in [test code](tests/immutable/).
 
 ### Constructor
 
-Generates constructor function for struct. More details see [here](docs/constructor.md)
+Generates constructor function for struct. More details see [here](docs/constructor.md).
 
 ### Impl
 
-Generates interface implementations stubs. More details see [here](docs/impl.md)
+Generates interface implementations stubs. More details see [here](docs/impl.md).
 
 ## Nice to have
 

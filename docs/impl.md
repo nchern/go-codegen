@@ -1,6 +1,6 @@
 ## impl command
 
-Generates stubs to implement a given interface
+Generates stubs to implement a given interface.
 The difference between this command and impl(https://github.com/josharian/impl) utility is that interface declaration is read from stdin.
 So that it's really easy to use it with editors like Vim
 
