@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"sync"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestStringMap(t *testing.T) {
@@ -36,7 +38,8 @@ func TestStringMap(t *testing.T) {
 
 		return true
 	})
-
+	assert.Equal(t, []string{"1", "2", "3"}, keys)
+	assert.Equal(t, []string{"a", "b", "c"}, values)
 }
 
 func TestStringMapConcurrency(t *testing.T) {
