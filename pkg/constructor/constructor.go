@@ -14,7 +14,7 @@ import (
 
 const (
 	initializerTpl = `
-func New{{.Name}}({{ join .Fields ", "}}) *{{.Name}} {
+func New{{ title .Name }}({{ join .Fields ", "}}) *{{.Name}} {
 	return &{{.Name}}{
 		{{- range .Fields}}
 		{{.Name}}: {{.LName}},
@@ -109,6 +109,7 @@ func (g *Generator) Generate(w io.Writer) error {
 	for _, st := range structs {
 		tpl := template.Must(template.New("init").
 			Funcs(template.FuncMap{"join": join}).
+			Funcs(template.FuncMap{"title": strings.Title}).
 			Parse(initializerTpl))
 
 		if err := tpl.Execute(w, st); err != nil {

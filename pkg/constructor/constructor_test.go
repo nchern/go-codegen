@@ -33,6 +33,26 @@ func NewFoo(bar string, bazz float64, fuzz Phone) *Foo {
 	testutil.AssertCodeIsSame(t, expected, actual.String())
 }
 
+func TestShouldGenerateForPackagePrivateStructWithCorrectCasing(t *testing.T) {
+	source := `
+type foo struct {
+	Bar string
+}`
+
+	expected := `
+func NewFoo(bar string) *foo {
+	return &foo{
+		Bar: bar,
+	}
+}
+`
+
+	var actual bytes.Buffer
+	err := FromReader(bytes.NewBufferString(source)).Generate(&actual)
+
+	assert.NoError(t, err)
+	testutil.AssertCodeIsSame(t, expected, actual.String())
+}
 func TestShouldGenerateWitgComplextTypedFields(t *testing.T) {
 	source := `
 type Foo struct {
