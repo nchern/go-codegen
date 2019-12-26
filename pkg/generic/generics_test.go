@@ -52,6 +52,8 @@ func TestTypeMapShouldSubstituteTypeVarInIdent(t *testing.T) {
 		{"NewT0List", "NewStringSliceList", TypeMap{T0: "[]string"}},
 		{"NewT0List", "NewObjectSliceList", TypeMap{T0: "[]interface{}"}},
 		{"NewT0List", "NewFooPtrSliceList", TypeMap{T0: "[]*Foo"}},
+		{"FromT0To", "FromUUIDTo", TypeMap{T0: "uuid.UUID"}},
+		{"T0To", "BarPtrTo", TypeMap{T0: "*model.Bar"}},
 	}
 	for _, tt := range tests {
 		tt := tt
