@@ -13,45 +13,54 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestTypeMap(t *testing.T) {
+func TestTypeMapShouldRewriteType(t *testing.T) {
 	m := TypeMap{
 		T0: "string",
 		T1: "*Point",
 	}
+	var tests = []struct {
+		given string
 
-	ident := ast.NewIdent("T0")
-	assert.True(t, m.rewriteType(ident))
-	assert.Equal(t, "string", ident.String())
+		underTest TypeMap
 
-	ident = ast.NewIdent("int")
-	assert.False(t, m.rewriteType(ident))
-	assert.Equal(t, "int", ident.String())
+		expected       string
+		expectedResult bool
+	}{
+		{"T0", m, "string", true},
+		{"T1", m, "*Point", true},
+		{"int", m, "int", false},
+		{"T0", TypeMap{T0: "db.Conn"}, "db.Conn", true},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run("rewrite:"+tt.given, func(t *testing.T) {
+			ident := ast.NewIdent(tt.given)
+			assert.Equal(t, tt.expectedResult, tt.underTest.rewriteType(ident))
+			assert.Equal(t, tt.expected, ident.Name)
+		})
+	}
+}
 
-	ident = ast.NewIdent("NewT0FooT1")
-	m.substituteTypeVarInIdent(ident)
-	assert.Equal(t, "NewStringFooPointPtr", ident.Name)
-
-	// test complex cases
-
-	m = TypeMap{T0: "interface{}"}
-	ident = ast.NewIdent("NewT0List")
-	m.substituteTypeVarInIdent(ident)
-	assert.Equal(t, "NewObjectList", ident.Name)
-
-	m = TypeMap{T0: "[]string"}
-	ident = ast.NewIdent("NewT0List")
-	m.substituteTypeVarInIdent(ident)
-	assert.Equal(t, "NewStringSliceList", ident.Name)
-
-	m = TypeMap{T0: "[]interface{}"}
-	ident = ast.NewIdent("NewT0List")
-	m.substituteTypeVarInIdent(ident)
-	assert.Equal(t, "NewObjectSliceList", ident.Name)
-
-	m = TypeMap{T0: "[]*Foo"}
-	ident = ast.NewIdent("NewT0List")
-	m.substituteTypeVarInIdent(ident)
-	assert.Equal(t, "NewFooPtrSliceList", ident.Name)
+func TestTypeMapShouldSubstituteTypeVarInIdent(t *testing.T) {
+	tests := []struct {
+		given     string
+		expected  string
+		underTest TypeMap
+	}{
+		{"NewT0FooT1", "NewStringFooPointPtr", TypeMap{T0: "string", T1: "*Point"}},
+		{"NewT0List", "NewObjectList", TypeMap{T0: "interface{}"}},
+		{"NewT0List", "NewStringSliceList", TypeMap{T0: "[]string"}},
+		{"NewT0List", "NewObjectSliceList", TypeMap{T0: "[]interface{}"}},
+		{"NewT0List", "NewFooPtrSliceList", TypeMap{T0: "[]*Foo"}},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.given, func(t *testing.T) {
+			ident := ast.NewIdent(tt.given)
+			tt.underTest.substituteTypeVarInIdent(ident)
+			assert.Equal(t, tt.expected, ident.Name)
+		})
+	}
 }
 
 func TestStripTypeVarsDecls(t *testing.T) {
