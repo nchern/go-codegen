@@ -76,14 +76,14 @@ func TestStripTypeVarsDecls(t *testing.T) {
 	assert.Equal(t, "package main\n\nfunc foo()\t{}\n", buf.String())
 }
 
-func TestGenericBadTypeVarError(t *testing.T) {
+func TestGenerateShouldFailOnUnsupportedTypeVar(t *testing.T) {
 	err := FromFile("file.go").
 		WithTypeMapping(TypeMap{TypeVar("BOO"): "*string"}).
 		Generate(os.Stderr)
 	assert.Error(t, err)
 }
 
-func TestGenericWriteToRewritesPackageName(t *testing.T) {
+func TestGenerateWithPackageNameShouldRewritePackageName(t *testing.T) {
 	srcText := `package pkg
 	func foo() {
 	}`
@@ -103,7 +103,7 @@ func TestGenericWriteToRewritesPackageName(t *testing.T) {
 	testutil.AssertCodeIsSame(t, expectedText, actualBuf.String())
 }
 
-func TestGenericWriteTo(t *testing.T) {
+func TestGenerateShouldSubsituteTypeVarsAndProduceCode(t *testing.T) {
 	srcText := `package pkg
 	type T0 int
 	func genericFuncT0T1(a string, b T0) (T1, error) {
