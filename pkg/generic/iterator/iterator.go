@@ -4,6 +4,15 @@ type T0 string
 
 type T0GeneratorFunc func(generator chan<- T0) error
 
+func T0SliceGenerator(src []T0) T0GeneratorFunc {
+	return func(iter chan<- T0) error {
+		for _, v := range src {
+			iter <- v
+		}
+		return nil
+	}
+}
+
 type T0Iter interface {
 	// Err returns error if it happened during generation
 	Err() error

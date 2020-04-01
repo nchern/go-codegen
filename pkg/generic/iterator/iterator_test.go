@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGenerate(t *testing.T) {
+func TestShouldGenerate(t *testing.T) {
 	expected := []T0{"abc", "foo", "bar"}
 	iter := Generate(func(iter chan<- T0) error {
 		for _, v := range expected {
@@ -24,7 +24,19 @@ func TestGenerate(t *testing.T) {
 
 }
 
-func TestGenerateWithError(t *testing.T) {
+func TestShouldGenerate1(t *testing.T) {
+	expected := []T0{"abc", "foo", "bar"}
+	iter := Generate(T0SliceGenerator(expected))
+
+	actuals := []T0{}
+	for actual := range iter.Next() {
+		actuals = append(actuals, actual)
+	}
+
+	assert.NoError(t, iter.Err())
+}
+
+func TestShouldGenerateAndStopOnError(t *testing.T) {
 	expected := []T0{"abc", "foo", "bar"}
 	expectedErr := errors.New("boom")
 	iter := Generate(func(iter chan<- T0) error {
@@ -42,4 +54,21 @@ func TestGenerateWithError(t *testing.T) {
 	}
 	assert.Equal(t, expectedErr, iter.Err())
 	assert.Equal(t, expected[0:2], actuals)
+}
+
+func TestShouldSliceGeneratorProduce(t *testing.T) {
+	var err error
+	out := make(chan T0)
+	expected := []T0{"abc", "foo", "bar"}
+
+	go func() {
+		err = T0SliceGenerator(expected)(out)
+		close(out)
+	}()
+	i := 0
+	for it := range out {
+		assert.Equal(t, expected[i], it)
+		i++
+	}
+	assert.NoError(t, err)
 }

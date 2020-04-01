@@ -8,14 +8,14 @@ clean:
 
 .PHONY: bindata
 bindata:
-	go-bindata -prefix=pkg/generic -ignore="_test.go" -pkg=generic -o pkg/generic/bindata.go pkg/generic/list/ pkg/generic/set/ pkg/generic/typedmap/ pkg/generic/iterator/ pkg/generic/convert
+	go-bindata -prefix=pkg/generic -ignore="_test.go" -pkg=generic -o pkg/generic/bindata.go pkg/generic/list/ pkg/generic/set/ pkg/generic/typedmap/ pkg/generic/iterator/ pkg/generic/converter
 
 .PHONY: build
 build: bindata vet gen
 	go build ./...
 
 .PHONY: install
-install: test
+install: test bindata
 	go get ./...
 
 .PHONY: vet
