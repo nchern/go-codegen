@@ -72,6 +72,16 @@ func (m TypeMap) substituteTypeVarInIdent(n *ast.Ident) {
 			continue
 		}
 		subs := tVal
+
+		if toks := strings.Split(subs, "."); len(toks) > 1 {
+			if len(toks) == 2 {
+				// strip out package name from an exported identifier, like foo.Bar
+				subs = toks[1]
+			} else {
+				panic(fmt.Errorf("bad identifier name: %s", tVal))
+			}
+		}
+
 		if strings.Contains(tVal, "*") {
 			subs = strings.Replace(subs, "*", "", -1) + "Ptr"
 		}

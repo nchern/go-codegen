@@ -23,7 +23,7 @@ func formatSrc(src string) string {
 func CreateGoFile(srcText string) *os.File {
 	file, err := ioutil.TempFile("/tmp", "generic")
 	if err != nil {
-		panic(err.Error())
+		panic(err)
 	}
 	if _, err = file.WriteString(srcText); err != nil {
 		panic(err)
