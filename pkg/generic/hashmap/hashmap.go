@@ -5,14 +5,27 @@ import "sync"
 type T0 string
 type T1 int
 
+// T0T1MapVisitor is a visitor function to visit map pairs
 type T0T1MapVisitor func(T0, T1) bool
 
+// T0T1Map exposes the contract of T0T1 map
 type T0T1Map interface {
+	// Each visits each element in the map. It stops iterations if visitor func returns false
 	Each(visitor T0T1MapVisitor)
+
+	// Get returns the value of a given key. If the key was not found the second return value will be false
 	Get(key T0) (v T1, found bool)
+
+	// Set sets the value of a given key
 	Set(key T0, val T1)
+
+	// Update updates the current map from a given map
 	Update(src map[T0]T1) T0T1Map
+
+	// Remove removes a given key from this map
 	Remove(key T0) bool
+
+	// Clone creates a copy of this map
 	Clone() T0T1Map
 }
 
@@ -20,6 +33,7 @@ type baseT0T1Map struct {
 	_map map[T0]T1
 }
 
+// NewT0T1Map creates a basic instance of the T0T1Map. It is _unsafe_ for concurrent access.
 func NewT0T1Map() T0T1Map {
 	res := &baseT0T1Map{
 		_map: map[T0]T1{},
@@ -27,6 +41,7 @@ func NewT0T1Map() T0T1Map {
 	return res
 }
 
+// NewT0T1MapSyncronized creates a concurrent safe instance of the T0T1Map
 func NewT0T1MapSyncronized() T0T1Map {
 	return &syncT0T1Map{
 		inner: NewT0T1Map(),

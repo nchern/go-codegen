@@ -142,29 +142,70 @@ func TestGenerateShouldSubsituteTypeVarsAndProduceCode(t *testing.T) {
 }
 
 func TestGenerateShouldSubsituteTypeVarsInComments(t *testing.T) {
-	srcText := `package pkg
-	type T0 int
+	var tests = []struct {
+		name     string
+		given    string
+		expected string
+	}{
+		{"single line comment",
+			`package pkg
+			type T0 int
 
-	// FooT0 converts T0 to string
-	func FooT0(a T0) string {
-		return a.String()
-	}`
+			// FooT0 converts T0 to string
+			func FooT0(a T0) string {
+				return a.String()
+			}`,
+			`package pkg
+			// FooBar converts Bar to string
+			func FooBar(a Bar) string {
+				return a.String()
+			}`},
+		{"multiple single line comments",
+			`package pkg
+			type T0 int
 
-	expectedText := `package pkg
-	// FooBar converts Bar to string
-	func FooBar(a Bar) string {
-		return a.String()
-	}`
+			// FooT0 converts T0 to string
+			// T0 should implement Stringer interface
+			// Warning: T0 should not be nil
+			func FooT0(a T0) string {
+				return a.String()
+			}`,
+			`package pkg
+			// FooBar converts Bar to string
+			// Bar should implement Stringer interface
+			// Warning: Bar should not be nil
+			func FooBar(a Bar) string {
+				return a.String()
+			}`},
+		{"multi-line comments",
+			`package pkg
+			type T0 int
 
-	file := testutil.CreateGoFile(srcText)
-	defer os.Remove(file.Name())
+			/* FooT0 converts T0 to string
+			   T0 should implement Stringer interface
+			   Warning: T0 should not be nil */
+			func FooT0(a T0) string {
+				return a.String()
+			}`,
+			`package pkg
+			/* FooBar converts Bar to string
+			   Bar should implement Stringer interface
+			   Warning: Bar should not be nil */
+			func FooBar(a Bar) string {
+				return a.String()
+			}`},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			actualBuf := bytes.Buffer{}
+			err := FromBytes([]byte(tt.given)).
+				WithTypeMapping(TypeMap{T0: "Bar"}).
+				Generate(&actualBuf)
 
-	actualBuf := bytes.Buffer{}
-	err := FromFile(file.Name()).
-		WithTypeMapping(TypeMap{T0: "Bar"}).
-		Generate(&actualBuf)
+			assert.NoError(t, err)
 
-	assert.NoError(t, err)
-
-	testutil.AssertCodeIsSame(t, expectedText, actualBuf.String())
+			testutil.AssertCodeIsSame(t, tt.expected, actualBuf.String())
+		})
+	}
 }
