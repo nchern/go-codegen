@@ -1,9 +1,12 @@
 package iterator
 
+// T0 is a generic variable type placeholder of an iterator element. It will not appear in the generated code
 type T0 string
 
+// T0GeneratorFunc
 type T0GeneratorFunc func(generator chan<- T0) error
 
+// T0SliceGenerator generates elements from a given slice
 func T0SliceGenerator(src []T0) T0GeneratorFunc {
 	return func(iter chan<- T0) error {
 		for _, v := range src {
@@ -13,6 +16,7 @@ func T0SliceGenerator(src []T0) T0GeneratorFunc {
 	}
 }
 
+// T0Iter implements iterator over T0 type elements
 type T0Iter interface {
 	// Err returns error if it happened during generation
 	Err() error
