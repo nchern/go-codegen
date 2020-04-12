@@ -66,9 +66,9 @@ func (m TypeMap) rewriteType(n *ast.Ident) bool {
 	return false
 }
 
-func (m TypeMap) substituteTypeVarInIdent(n *ast.Ident) {
+func (m TypeMap) substituteTypeVar(text textChunk) {
 	for tVar, tVal := range m {
-		if !strings.Contains(n.Name, string(tVar)) {
+		if !strings.Contains(text.String(), string(tVar)) {
 			continue
 		}
 		subs := tVal
@@ -92,7 +92,7 @@ func (m TypeMap) substituteTypeVarInIdent(n *ast.Ident) {
 			subs = strings.TrimPrefix(subs, "[]") + "Slice"
 		}
 
-		n.Name = strings.Replace(n.Name, string(tVar), strings.Title(subs), -1)
+		text.SetString(strings.Replace(text.String(), string(tVar), strings.Title(subs), -1))
 	}
 }
 
@@ -180,9 +180,12 @@ func (g *Generator) Generate(w io.Writer) error {
 		switch n := n.(type) {
 		case *ast.Ident:
 			if g.typeVars.rewriteType(n) {
+				// Ident is a generic type
 				return true
 			}
-			g.typeVars.substituteTypeVarInIdent(n)
+			g.typeVars.substituteTypeVar(&identText{n})
+		case *ast.Comment:
+			g.typeVars.substituteTypeVar(&commentText{n})
 		}
 		return true
 	})
@@ -192,4 +195,33 @@ func (g *Generator) Generate(w io.Writer) error {
 	}
 
 	return printer.Fprint(w, fset, node)
+}
+
+type textChunk interface {
+	String() string
+	SetString(s string)
+}
+
+type identText struct {
+	*ast.Ident
+}
+
+func (c *identText) String() string {
+	return c.Name
+}
+
+func (c *identText) SetString(s string) {
+	c.Name = s
+}
+
+type commentText struct {
+	*ast.Comment
+}
+
+func (c *commentText) String() string {
+	return c.Text
+}
+
+func (c *commentText) SetString(s string) {
+	c.Text = s
 }

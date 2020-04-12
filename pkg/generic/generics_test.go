@@ -59,7 +59,7 @@ func TestTypeMapShouldSubstituteTypeVarInIdent(t *testing.T) {
 		tt := tt
 		t.Run(tt.given, func(t *testing.T) {
 			ident := ast.NewIdent(tt.given)
-			tt.underTest.substituteTypeVarInIdent(ident)
+			tt.underTest.substituteTypeVar(&identText{ident})
 			assert.Equal(t, tt.expected, ident.Name)
 		})
 	}
@@ -134,6 +134,34 @@ func TestGenerateShouldSubsituteTypeVarsAndProduceCode(t *testing.T) {
 	actualBuf := bytes.Buffer{}
 	err := FromFile(file.Name()).
 		WithTypeMapping(TypeMap{T0: "string", T1: "*Object"}).
+		Generate(&actualBuf)
+
+	assert.NoError(t, err)
+
+	testutil.AssertCodeIsSame(t, expectedText, actualBuf.String())
+}
+
+func TestGenerateShouldSubsituteTypeVarsInComments(t *testing.T) {
+	srcText := `package pkg
+	type T0 int
+
+	// FooT0 converts T0 to string
+	func FooT0(a T0) string {
+		return a.String()
+	}`
+
+	expectedText := `package pkg
+	// FooBar converts Bar to string
+	func FooBar(a Bar) string {
+		return a.String()
+	}`
+
+	file := testutil.CreateGoFile(srcText)
+	defer os.Remove(file.Name())
+
+	actualBuf := bytes.Buffer{}
+	err := FromFile(file.Name()).
+		WithTypeMapping(TypeMap{T0: "Bar"}).
 		Generate(&actualBuf)
 
 	assert.NoError(t, err)
