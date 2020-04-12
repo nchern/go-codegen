@@ -27,8 +27,14 @@ $ go-codegen -h
 
 #### Usage
 ```bash
-# Outputs typed string list implementation to stdout
-go-codegen --pkg=main generic -f pkg/generic/list/list.go string
+# Outputs built-in string to int map implementation to stdout
+go-codegen generic -t=typedmap string int
+
+# Reads generic source from file pkg/generic/list/list.go and outputs typed implementation to stdout
+go-codegen generic -f pkg/generic/list/list.go string
+
+# More help on available built-ins and other command line params
+go-codegen help generic
 ```
 
 Generics are implemented by parsing an input go source file into an AST and substituting predefined "generic" types. Currently only a fixed list of such types is supported: `T0, T1, ..., T5`. The advantage of such approach as the generic implementation(input source) is the correct go source that can be tested.
