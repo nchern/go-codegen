@@ -1,4 +1,4 @@
-package typedmap
+package hashmap
 
 import "sync"
 

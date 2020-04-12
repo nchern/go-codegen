@@ -28,7 +28,7 @@ $ go-codegen -h
 #### Usage
 ```bash
 # Outputs built-in string to int map implementation to stdout
-go-codegen generic -t=typedmap string int
+go-codegen generic -t=hashmap string int
 
 # Reads generic source from file pkg/generic/list/list.go and outputs typed implementation to stdout
 go-codegen generic -f pkg/generic/list/list.go string
