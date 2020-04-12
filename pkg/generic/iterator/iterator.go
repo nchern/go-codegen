@@ -1,6 +1,7 @@
+// Package iterator provides a built-in implementation of an ideomatic generic iterator
 package iterator
 
-// T0 is a generic variable type placeholder of an iterator element. It will not appear in the generated code
+// T0 is a generic type variable placeholder of an iterator element. It will not appear in the generated code
 type T0 string
 
 // T0GeneratorFunc is a function that should generate elements and send them to a given channel

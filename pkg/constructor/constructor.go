@@ -1,3 +1,5 @@
+// Package constructor provides code generator to generate New... function
+// that creates an instance of a given struct.
 package constructor
 
 import (

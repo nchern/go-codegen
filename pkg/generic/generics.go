@@ -1,3 +1,5 @@
+// Package generic provides code generator that takes go sources of a generic-like go code and
+// generates concrete implementation by substituting predefined type variables (T1,.., T5) to a given type names
 package generic
 
 import (
@@ -11,7 +13,7 @@ import (
 	"strings"
 )
 
-// TypeVar indicates generic type var
+// TypeVar indicates generic type variable name
 type TypeVar string
 
 const (
@@ -43,7 +45,7 @@ var (
 	ErrBadTypeVar = errors.New("Bad type variable")
 )
 
-// TypeMap maps type vars
+// TypeMap maps type variable names to concrete type names
 type TypeMap map[TypeVar]string
 
 // TypeMapFromStrings returns TypeMap filled with given type var names

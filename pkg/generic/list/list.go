@@ -1,3 +1,4 @@
+// Package list provides a built-in implementation of a generic list
 package list
 
 import (

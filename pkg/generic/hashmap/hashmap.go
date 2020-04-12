@@ -1,17 +1,18 @@
+// Package hashmap provides a built-in implementation of a generic map
 package hashmap
 
 import "sync"
 
-// T0 is a generic variable type placeholder of a key type. It will not appear in the generated code
+// T0 is a generic type variable placeholder of a key type. It will not appear in the generated code
 type T0 string
 
-// T1 is a generic variable type placeholder of a value type. It will not appear in the generated code
+// T1 is a generic type variable placeholder of a value type. It will not appear in the generated code
 type T1 int
 
 // T0T1MapVisitor is a visitor function to visit map pairs
 type T0T1MapVisitor func(T0, T1) bool
 
-// T0T1Map exposes the contract of T0T1 map
+// T0T1Map exposes the contract of T0 to T1 map
 type T0T1Map interface {
 	// Each visits each element in the map. It stops iterations if visitor func returns false
 	Each(visitor T0T1MapVisitor)

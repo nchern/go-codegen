@@ -1,3 +1,4 @@
+// Package testutil provides various utils to test generated code
 package testutil
 
 import (

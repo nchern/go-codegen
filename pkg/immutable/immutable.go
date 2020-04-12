@@ -1,3 +1,4 @@
+// Package immutable provides code generator to generate immmutable-like objects and builders for them
 package immutable
 
 import (
@@ -128,7 +129,7 @@ func (g *Generator) WithPackageName(name string) *Generator {
 	return g
 }
 
-// Generate generates immutable struct anb builder from a given interface
+// Generate generates immutable struct and builder from a given interface
 func (g *Generator) Generate(w io.Writer) error {
 	immutables := []typeInfo{}
 

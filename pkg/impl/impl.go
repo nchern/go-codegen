@@ -1,3 +1,4 @@
+// Package impl provides code generator to generate interface implementations
 package impl
 
 import (
@@ -29,12 +30,12 @@ func ({{$.Receiver}} *{{$.StructName}}) {{.Signature}} {
 // TODO: set custom stub struct name
 // TODO: generate default returns based on return types
 
-// Generator implements an interface implenetation code generator
+// Generator generates interface implementation code.
 type Generator struct {
 	src io.Reader
 }
 
-// FromReader returns ImplementationGenerator that reads source from provided reader
+// FromReader returns a new instance of Generator that reads source from provided reader
 func FromReader(r io.Reader) *Generator {
 	return &Generator{
 		src: r,
