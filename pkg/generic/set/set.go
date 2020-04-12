@@ -1,5 +1,6 @@
 package set
 
+// T0 is a generic variable type placeholder of a set element. It will not appear in the generated code
 type T0 string
 
 // T0Set represents a set of T0 elements
@@ -7,7 +8,7 @@ type T0Set struct {
 	m map[T0]bool
 }
 
-// NewT0Set creates an instanse of T0Set with given elements
+// NewT0Set creates an instance of T0Set with given elements
 func NewT0Set(vals ...T0) *T0Set {
 	res := &T0Set{m: map[T0]bool{}}
 	res.Add(vals...)

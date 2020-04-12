@@ -19,7 +19,7 @@ type {{.StructName}} struct {}
 {{- range .Methods}}
 
 {{ .Comments }}
-func ({{$.Reciever}} *{{$.StructName}}) {{.Signature}} {
+func ({{$.Receiver}} *{{$.StructName}}) {{.Signature}} {
 	panic("Not implemented")
 }
 {{- end}}
@@ -109,7 +109,7 @@ type interfaceInfo struct {
 	Methods []methodInfo
 }
 
-func (i interfaceInfo) Reciever() string {
+func (i interfaceInfo) Receiver() string {
 	return string(i.StructName()[0])
 }
 

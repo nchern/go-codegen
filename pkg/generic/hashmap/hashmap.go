@@ -2,7 +2,10 @@ package hashmap
 
 import "sync"
 
+// T0 is a generic variable type placeholder of a key type. It will not appear in the generated code
 type T0 string
+
+// T1 is a generic variable type placeholder of a value type. It will not appear in the generated code
 type T1 int
 
 // T0T1MapVisitor is a visitor function to visit map pairs
