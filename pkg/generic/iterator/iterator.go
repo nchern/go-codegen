@@ -3,7 +3,7 @@ package iterator
 // T0 is a generic variable type placeholder of an iterator element. It will not appear in the generated code
 type T0 string
 
-// T0GeneratorFunc
+// T0GeneratorFunc is a function that should generate elements and send them to a given channel
 type T0GeneratorFunc func(generator chan<- T0) error
 
 // T0SliceGenerator generates elements from a given slice
