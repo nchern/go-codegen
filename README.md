@@ -1,4 +1,6 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/nchern/go-codegen)](https://goreportcard.com/report/github.com/nchern/go-codegen)
+[![Coverage](https://gocover.io/_badge/github.com/nchern/go-codegen)](https://gocover.io/github.com/nchern/go-codegen)
+
 
 # go-codegen
 
