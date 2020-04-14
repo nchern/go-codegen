@@ -16,7 +16,7 @@ build: bindata vet gen
 
 .PHONY: install
 install: test bindata
-	go get ./...
+	go install ./...
 
 .PHONY: vet
 vet:
