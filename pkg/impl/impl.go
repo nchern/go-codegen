@@ -2,12 +2,16 @@
 package impl
 
 import (
+	"bytes"
 	"errors"
+	"fmt"
 	"go/ast"
 	"go/parser"
+	"go/printer"
 	"go/scanner"
 	"go/token"
 	"io"
+	"strings"
 	"text/template"
 
 	"github.com/nchern/go-codegen/pkg/code"
@@ -21,7 +25,7 @@ type {{.StructName}} struct {}
 
 {{ .Comments }}
 func ({{$.Receiver}} *{{$.StructName}}) {{.Signature}} {
-	panic("Not implemented")
+	{{ .Body }}
 }
 {{- end}}
 `
@@ -74,10 +78,14 @@ func (g *Generator) Generate(w io.Writer) error {
 						err = errors.New("Unsupported method signature: empty names")
 						return false
 					}
-					mInfo := methodInfo{Signature: src[m.Pos()-1 : m.End()-1]}
+					mInfo := methodInfo{
+						Signature: src[m.Pos()-1 : m.End()-1],
+						Type:      m.Type.(*ast.FuncType),
+					}
 					if m.Doc != nil {
 						mInfo.Comments = src[m.Doc.Pos()-1 : m.Doc.End()-1]
 					}
+
 					iface.Methods = append(iface.Methods, mInfo)
 				}
 
@@ -103,6 +111,43 @@ func (g *Generator) Generate(w io.Writer) error {
 type methodInfo struct {
 	Comments  string
 	Signature string
+
+	Type *ast.FuncType
+}
+
+func (i methodInfo) Body() string {
+	var results *ast.FieldList
+	if i.Type != nil {
+		results = i.Type.Results
+	}
+	if results != nil {
+		res := results.List[0]
+
+		var buf bytes.Buffer
+		fset := token.NewFileSet()
+
+		if err := printer.Fprint(&buf, fset, res.Type); err != nil {
+			return fmt.Sprintf("// error during generation: %s", err)
+		}
+
+		tp := buf.String()
+		switch tp {
+		case "int":
+			return "return 0"
+		case "string":
+			return "return \"\""
+		case "bool":
+			return "return false"
+		case "interface{}":
+			return "return nil"
+		}
+		if strings.HasPrefix(tp, "*") ||
+			strings.HasPrefix(tp, "[]") {
+			return "return nil"
+		}
+
+	}
+	return "panic(\"Not implemented\")"
 }
 
 type interfaceInfo struct {

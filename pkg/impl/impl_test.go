@@ -15,12 +15,14 @@ func TestShouldGenerateImplementation(t *testing.T) {
 		"	Bar(a int, b float64) CustomStruct",
 		"	FooBar() interface{}",
 		"	Fuzz() []*CustomStruct",
+		"	IsGood() bool",
+		"	FetchPtr() *Ptr",
 		"}")
 
 	expected := text(
 		"type testInterface struct {}",
 		"func (t *testInterface) Foo(u *User) int {",
-		"	panic(\"Not implemented\")",
+		"	return 0",
 		"}",
 		"",
 		"func (t *testInterface) Bar(a int, b float64) CustomStruct {",
@@ -28,11 +30,19 @@ func TestShouldGenerateImplementation(t *testing.T) {
 		"}",
 		"",
 		"func (t *testInterface) FooBar() interface{} {",
-		"	panic(\"Not implemented\")",
+		"	return nil",
 		"}",
 		"",
 		"func (t *testInterface) Fuzz() []*CustomStruct {",
-		"	panic(\"Not implemented\")",
+		"	return nil",
+		"}",
+		"",
+		"func (t *testInterface) IsGood() bool {",
+		"	return false",
+		"}",
+		"",
+		"func (t *testInterface) FetchPtr() *Ptr {",
+		"	return nil",
 		"}")
 
 	var actual bytes.Buffer
@@ -86,13 +96,13 @@ func TestShouldGenerateMethodsWithCommentsIfCommentsWereProvided(t *testing.T) {
 
 		"// Foo has a single line comment",
 		"func (t *testInterface) Foo() int {",
-		"	panic(\"Not implemented\")",
+		"	return 0",
 		"}",
 
 		"// Bar has",
 		"// two single line comments",
 		"func (t *testInterface) Bar(i int) string {",
-		"	panic(\"Not implemented\")",
+		"	return \"\"",
 		"}",
 
 		"/*",
