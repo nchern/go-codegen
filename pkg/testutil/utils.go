@@ -36,3 +36,9 @@ func CreateGoFile(srcText string) *os.File {
 func AssertCodeIsSame(t *testing.T, expected string, actual string) {
 	assert.Equal(t, formatSrc(expected), formatSrc(actual))
 }
+
+// Text takes lines as varargs and returns a string with mulitline text.
+// Just some sugar for writing tests with multiline inputs
+func Text(lines ...string) string {
+	return strings.Join(lines, "\n")
+}

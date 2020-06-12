@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/nchern/go-codegen/pkg/testutil"
+	. "github.com/nchern/go-codegen/pkg/testutil"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -16,12 +16,12 @@ func TestShouldGenerateImplementation(t *testing.T) {
 	}{
 		{
 			"with panics as impl",
-			text(
+			Text(
 				"type TestInterface interface {",
 				"	Foo(u *User)",
 				"	Bar(a int, b float64) CustomStruct",
 				"}"),
-			text(
+			Text(
 				"type testInterface struct {}",
 				"func (t *testInterface) Foo(u *User) {",
 				"	panic(\"Not implemented\")",
@@ -33,12 +33,12 @@ func TestShouldGenerateImplementation(t *testing.T) {
 			)},
 		{
 			"return default values for primitive types",
-			text(
+			Text(
 				"type TestInterface interface {",
 				"	Foo() int",
 				"	Bar(a string) bool",
 				"}"),
-			text(
+			Text(
 				"type testInterface struct {}",
 				"func (t *testInterface) Foo() int {",
 				"	return 0",
@@ -50,13 +50,13 @@ func TestShouldGenerateImplementation(t *testing.T) {
 			)},
 		{
 			"return nil as default value for various pointer types",
-			text(
+			Text(
 				"type TestInterface interface {",
 				"	Foo() interface{}",
 				"	Bar(a []string) *CustomStruct",
 				"	FooBar(a ...string) []*CustomStruct",
 				"}"),
-			text(
+			Text(
 				"type testInterface struct {}",
 				"func (t *testInterface) Foo() interface{} {",
 				"	return nil",
@@ -77,7 +77,7 @@ func TestShouldGenerateImplementation(t *testing.T) {
 			var actual bytes.Buffer
 			assert.NoError(t, FromReader(bytes.NewBufferString(tt.given)).Generate(&actual))
 
-			testutil.AssertCodeIsSame(t, tt.expected, actual.String())
+			AssertCodeIsSame(t, tt.expected, actual.String())
 		})
 	}
 }
@@ -105,7 +105,7 @@ func TestShouldGenerateNothingOnUnsupportedTypes(t *testing.T) {
 }
 
 func TestShouldGenerateMethodsWithCommentsIfCommentsWereProvided(t *testing.T) {
-	source := text(
+	source := Text(
 		"type TestInterface interface {",
 		"	// Foo has a single line comment",
 		"	Foo() int",
@@ -121,7 +121,7 @@ func TestShouldGenerateMethodsWithCommentsIfCommentsWereProvided(t *testing.T) {
 		"	Buzz()",
 		"}")
 
-	expected := text(
+	expected := Text(
 		"type testInterface struct {}",
 
 		"// Foo has a single line comment",
@@ -147,5 +147,5 @@ func TestShouldGenerateMethodsWithCommentsIfCommentsWereProvided(t *testing.T) {
 	err := FromReader(bytes.NewBufferString(source)).Generate(&actual)
 	assert.NoError(t, err)
 
-	testutil.AssertCodeIsSame(t, expected, actual.String())
+	AssertCodeIsSame(t, expected, actual.String())
 }

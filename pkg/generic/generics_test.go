@@ -9,7 +9,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/nchern/go-codegen/pkg/testutil"
+	. "github.com/nchern/go-codegen/pkg/testutil"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -101,7 +101,7 @@ func TestGenerateWithPackageNameShouldRewritePackageName(t *testing.T) {
 	expectedText := `package new
 	func foo() {
 	}`
-	file := testutil.CreateGoFile(srcText)
+	file := CreateGoFile(srcText)
 	defer os.Remove(file.Name())
 
 	actualBuf := bytes.Buffer{}
@@ -111,7 +111,7 @@ func TestGenerateWithPackageNameShouldRewritePackageName(t *testing.T) {
 		Generate(&actualBuf)
 	assert.NoError(t, err)
 
-	testutil.AssertCodeIsSame(t, expectedText, actualBuf.String())
+	AssertCodeIsSame(t, expectedText, actualBuf.String())
 }
 
 func TestGenerateShouldSubsituteTypeVarsAndProduceCode(t *testing.T) {
@@ -128,7 +128,7 @@ func TestGenerateShouldSubsituteTypeVarsAndProduceCode(t *testing.T) {
 		return m[b], nil
 	}`
 
-	file := testutil.CreateGoFile(srcText)
+	file := CreateGoFile(srcText)
 	defer os.Remove(file.Name())
 
 	actualBuf := bytes.Buffer{}
@@ -138,7 +138,7 @@ func TestGenerateShouldSubsituteTypeVarsAndProduceCode(t *testing.T) {
 
 	assert.NoError(t, err)
 
-	testutil.AssertCodeIsSame(t, expectedText, actualBuf.String())
+	AssertCodeIsSame(t, expectedText, actualBuf.String())
 }
 
 func TestGenerateShouldSubsituteTypeVarsInComments(t *testing.T) {
@@ -205,7 +205,7 @@ func TestGenerateShouldSubsituteTypeVarsInComments(t *testing.T) {
 
 			assert.NoError(t, err)
 
-			testutil.AssertCodeIsSame(t, tt.expected, actualBuf.String())
+			AssertCodeIsSame(t, tt.expected, actualBuf.String())
 		})
 	}
 }

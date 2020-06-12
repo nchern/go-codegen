@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nchern/go-codegen/pkg/testutil"
+	. "github.com/nchern/go-codegen/pkg/testutil"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -80,7 +80,7 @@ func TestShouldFailIfImmutableMethodHasParams(t *testing.T) {
 	type Value interface {
 		Foo(a int) string
 	}`
-	file := testutil.CreateGoFile(srcText)
+	file := CreateGoFile(srcText)
 	defer os.Remove(file.Name())
 
 	buf := bytes.Buffer{}
@@ -94,7 +94,7 @@ func TestShouldFailIfImmutableMethodHasMoreThanOneReturnParams(t *testing.T) {
 	type Value interface {
 		Foo() (string, int)
 	}`
-	file := testutil.CreateGoFile(srcText)
+	file := CreateGoFile(srcText)
 	defer os.Remove(file.Name())
 
 	buf := bytes.Buffer{}
@@ -111,7 +111,7 @@ func TestShouldGenerateImmutableStructAndBuilder(t *testing.T) {
 		SomeValue() int
 	}`
 
-	file := testutil.CreateGoFile(srcText)
+	file := CreateGoFile(srcText)
 	defer os.Remove(file.Name())
 
 	buf := bytes.Buffer{}
@@ -120,5 +120,5 @@ func TestShouldGenerateImmutableStructAndBuilder(t *testing.T) {
 
 	expectedSrc := strings.Replace(generatedImmutableSrc, "'", "`", -1)
 	actualSrc := strings.Trim(buf.String(), "\n")
-	testutil.AssertCodeIsSame(t, expectedSrc, actualSrc)
+	AssertCodeIsSame(t, expectedSrc, actualSrc)
 }
