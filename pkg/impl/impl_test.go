@@ -9,47 +9,77 @@ import (
 )
 
 func TestShouldGenerateImplementation(t *testing.T) {
-	source := text(
-		"type TestInterface interface {",
-		"	Foo(u *User) int",
-		"	Bar(a int, b float64) CustomStruct",
-		"	FooBar() interface{}",
-		"	Fuzz() []*CustomStruct",
-		"	IsGood() bool",
-		"	FetchPtr() *Ptr",
-		"}")
+	var tests = []struct {
+		name     string
+		given    string
+		expected string
+	}{
+		{
+			"with panics as impl",
+			text(
+				"type TestInterface interface {",
+				"	Foo(u *User)",
+				"	Bar(a int, b float64) CustomStruct",
+				"}"),
+			text(
+				"type testInterface struct {}",
+				"func (t *testInterface) Foo(u *User) {",
+				"	panic(\"Not implemented\")",
+				"}",
+				"",
+				"func (t *testInterface) Bar(a int, b float64) CustomStruct {",
+				"	panic(\"Not implemented\")",
+				"}",
+			)},
+		{
+			"return default values for primitive types",
+			text(
+				"type TestInterface interface {",
+				"	Foo() int",
+				"	Bar(a string) bool",
+				"}"),
+			text(
+				"type testInterface struct {}",
+				"func (t *testInterface) Foo() int {",
+				"	return 0",
+				"}",
+				"",
+				"func (t *testInterface) Bar(a string) bool {",
+				"	return false",
+				"}",
+			)},
+		{
+			"return nil as default value for various pointer types",
+			text(
+				"type TestInterface interface {",
+				"	Foo() interface{}",
+				"	Bar(a []string) *CustomStruct",
+				"	FooBar(a ...string) []*CustomStruct",
+				"}"),
+			text(
+				"type testInterface struct {}",
+				"func (t *testInterface) Foo() interface{} {",
+				"	return nil",
+				"}",
+				"",
+				"func (t *testInterface) Bar(a []string) *CustomStruct {",
+				"	return nil",
+				"}",
+				"",
+				"func (t *testInterface) FooBar(a ...string) []*CustomStruct {",
+				"	return nil",
+				"}",
+			)},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			var actual bytes.Buffer
+			assert.NoError(t, FromReader(bytes.NewBufferString(tt.given)).Generate(&actual))
 
-	expected := text(
-		"type testInterface struct {}",
-		"func (t *testInterface) Foo(u *User) int {",
-		"	return 0",
-		"}",
-		"",
-		"func (t *testInterface) Bar(a int, b float64) CustomStruct {",
-		"	panic(\"Not implemented\")",
-		"}",
-		"",
-		"func (t *testInterface) FooBar() interface{} {",
-		"	return nil",
-		"}",
-		"",
-		"func (t *testInterface) Fuzz() []*CustomStruct {",
-		"	return nil",
-		"}",
-		"",
-		"func (t *testInterface) IsGood() bool {",
-		"	return false",
-		"}",
-		"",
-		"func (t *testInterface) FetchPtr() *Ptr {",
-		"	return nil",
-		"}")
-
-	var actual bytes.Buffer
-	err := FromReader(bytes.NewBufferString(source)).Generate(&actual)
-	assert.NoError(t, err)
-
-	testutil.AssertCodeIsSame(t, expected, actual.String())
+			testutil.AssertCodeIsSame(t, tt.expected, actual.String())
+		})
+	}
 }
 
 func TestShouldGenerateNothingOnUnsupportedTypes(t *testing.T) {
