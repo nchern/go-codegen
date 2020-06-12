@@ -9,22 +9,21 @@ import (
 )
 
 func TestShouldGenerateWithSimpleTypedFields(t *testing.T) {
-	source := `
-type Foo struct {
-	Bar string
-	Bazz float64
-	Fuzz Phone
-}`
+	source := Text(
+		"type Foo struct {",
+		"	Bar string",
+		"	Bazz float64",
+		"	Fuzz Phone",
+		"}")
 
-	expected := `
-func NewFoo(bar string, bazz float64, fuzz Phone) *Foo {
-	return &Foo{
-		Bar: bar,
-		Bazz: bazz,
-		Fuzz: fuzz,
-	}
-}
-`
+	expected := Text(
+		"func NewFoo(bar string, bazz float64, fuzz Phone) *Foo {",
+		"	return &Foo{",
+		"		Bar: bar,",
+		"		Bazz: bazz,",
+		"		Fuzz: fuzz,",
+		"	}",
+		"}")
 
 	var actual bytes.Buffer
 	err := FromReader(bytes.NewBufferString(source)).Generate(&actual)
@@ -34,18 +33,17 @@ func NewFoo(bar string, bazz float64, fuzz Phone) *Foo {
 }
 
 func TestShouldGenerateForPackagePrivateStructWithCorrectCasing(t *testing.T) {
-	source := `
-type foo struct {
-	Bar string
-}`
+	source := Text(
+		"type foo struct {",
+		"	Bar string",
+		"}")
 
-	expected := `
-func NewFoo(bar string) *foo {
-	return &foo{
-		Bar: bar,
-	}
-}
-`
+	expected := Text(
+		"func NewFoo(bar string) *foo {",
+		"	return &foo{",
+		"		Bar: bar,",
+		"	}",
+		"}")
 
 	var actual bytes.Buffer
 	err := FromReader(bytes.NewBufferString(source)).Generate(&actual)
@@ -54,32 +52,31 @@ func NewFoo(bar string) *foo {
 	AssertCodeIsSame(t, expected, actual.String())
 }
 func TestShouldGenerateWitgComplextTypedFields(t *testing.T) {
-	source := `
-type Foo struct {
-	Bar string
-	Bazz interface{}
-	FooBar []int
-	FooBarBazz []interface{}
-	Ptr *User
-	Friends []*User
-	Mapping map[string]interface{}
-	PtrMapping map[float64]*User
-}`
+	source := Text(
+		"type Foo struct {",
+		"	Bar string",
+		"	Bazz interface{}",
+		"	FooBar []int",
+		"	FooBarBazz []interface{}",
+		"	Ptr *User",
+		"	Friends []*User",
+		"	Mapping map[string]interface{}",
+		"	PtrMapping map[float64]*User",
+		"}")
 
-	expected := `
-func NewFoo(bar string, bazz interface{}, fooBar []int, fooBarBazz []interface{}, ptr *User, friends []*User, mapping map[string]interface{}, ptrMapping map[float64]*User) *Foo {
-	return &Foo{
-		Bar: bar,
-		Bazz: bazz,
-		FooBar: fooBar,
-		FooBarBazz: fooBarBazz,
-		Ptr: ptr,
-		Friends: friends,
-		Mapping: mapping,
-		PtrMapping: ptrMapping,
-	}
-}
-`
+	expected := Text(
+		"func NewFoo(bar string, bazz interface{}, fooBar []int, fooBarBazz []interface{}, ptr *User, friends []*User, mapping map[string]interface{}, ptrMapping map[float64]*User) *Foo {",
+		"	return &Foo{",
+		"		Bar: bar,",
+		"		Bazz: bazz,",
+		"		FooBar: fooBar,",
+		"		FooBarBazz: fooBarBazz,",
+		"		Ptr: ptr,",
+		"		Friends: friends,",
+		"		Mapping: mapping,",
+		"		PtrMapping: ptrMapping,",
+		"	}",
+		"}")
 
 	var actual bytes.Buffer
 	err := FromReader(bytes.NewBufferString(source)).Generate(&actual)

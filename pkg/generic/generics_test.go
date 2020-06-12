@@ -66,12 +66,11 @@ func TestTypeMapShouldSubstituteTypeVarInIdent(t *testing.T) {
 }
 
 func TestStripTypeVarsDecls(t *testing.T) {
-	srcText := `
-	package main
-	type T0 string
-	func foo() {}
-	type T1 bool
-	`
+	srcText := Text(
+		"package main",
+		"type T0 string",
+		"func foo() {}",
+		"type T1 bool")
 	m := TypeMap{
 		T0: "string",
 		T1: "*Point",
@@ -95,12 +94,13 @@ func TestGenerateShouldFailOnUnsupportedTypeVar(t *testing.T) {
 }
 
 func TestGenerateWithPackageNameShouldRewritePackageName(t *testing.T) {
-	srcText := `package pkg
-	func foo() {
-	}`
-	expectedText := `package new
-	func foo() {
-	}`
+	srcText := Text(
+		"package pkg",
+		"func foo() {}")
+	expectedText := Text(
+		"package new",
+		"func foo() {}")
+
 	file := CreateGoFile(srcText)
 	defer os.Remove(file.Name())
 
@@ -115,18 +115,20 @@ func TestGenerateWithPackageNameShouldRewritePackageName(t *testing.T) {
 }
 
 func TestGenerateShouldSubsituteTypeVarsAndProduceCode(t *testing.T) {
-	srcText := `package pkg
-	type T0 int
-	func genericFuncT0T1(a string, b T0) (T1, error) {
-		m := map[T0]T1{}
-		return m[b], nil
-	}`
+	srcText := Text(
+		"package pkg",
+		"type T0 int",
+		"func genericFuncT0T1(a string, b T0) (T1, error) {",
+		"	m := map[T0]T1{}",
+		"	return m[b], nil",
+		"}")
 
-	expectedText := `package pkg
-	func genericFuncStringObjectPtr(a string, b string) (*Object, error) {
-		m := map[string]*Object{}
-		return m[b], nil
-	}`
+	expectedText := Text(
+		"package pkg",
+		"func genericFuncStringObjectPtr(a string, b string) (*Object, error) {",
+		"	m := map[string]*Object{}",
+		"	return m[b], nil",
+		"}")
 
 	file := CreateGoFile(srcText)
 	defer os.Remove(file.Name())
@@ -148,52 +150,58 @@ func TestGenerateShouldSubsituteTypeVarsInComments(t *testing.T) {
 		expected string
 	}{
 		{"single line comment",
-			`package pkg
-			type T0 int
-
-			// FooT0 converts T0 to string
-			func FooT0(a T0) string {
-				return a.String()
-			}`,
-			`package pkg
-			// FooBar converts Bar to string
-			func FooBar(a Bar) string {
-				return a.String()
-			}`},
+			Text(
+				"package pkg",
+				"type T0 int",
+				"",
+				"// FooT0 converts T0 to string",
+				"func FooT0(a T0) string {",
+				"	return a.String()",
+				"}"),
+			Text(
+				"package pkg",
+				"// FooBar converts Bar to string",
+				"func FooBar(a Bar) string {",
+				"	return a.String()",
+				"}")},
 		{"multiple single line comments",
-			`package pkg
-			type T0 int
-
-			// FooT0 converts T0 to string
-			// T0 should implement Stringer interface
-			// Warning: T0 should not be nil
-			func FooT0(a T0) string {
-				return a.String()
-			}`,
-			`package pkg
-			// FooBar converts Bar to string
-			// Bar should implement Stringer interface
-			// Warning: Bar should not be nil
-			func FooBar(a Bar) string {
-				return a.String()
-			}`},
+			Text(
+				"package pkg",
+				"type T0 int",
+				"",
+				"// FooT0 converts T0 to string",
+				"// T0 should implement Stringer interface",
+				"// Warning: T0 should not be nil",
+				"func FooT0(a T0) string {",
+				"	return a.String()",
+				"}"),
+			Text(
+				"package pkg",
+				"// FooBar converts Bar to string",
+				"// Bar should implement Stringer interface",
+				"// Warning: Bar should not be nil",
+				"func FooBar(a Bar) string {",
+				"	return a.String()",
+				"}")},
 		{"multi-line comments",
-			`package pkg
-			type T0 int
-
-			/* FooT0 converts T0 to string
-			   T0 should implement Stringer interface
-			   Warning: T0 should not be nil */
-			func FooT0(a T0) string {
-				return a.String()
-			}`,
-			`package pkg
-			/* FooBar converts Bar to string
-			   Bar should implement Stringer interface
-			   Warning: Bar should not be nil */
-			func FooBar(a Bar) string {
-				return a.String()
-			}`},
+			Text(
+				"package pkg",
+				"type T0 int",
+				"",
+				"/* FooT0 converts T0 to string",
+				"   T0 should implement Stringer interface",
+				"   Warning: T0 should not be nil */",
+				"func FooT0(a T0) string {",
+				"	return a.String()",
+				"}"),
+			Text(
+				"package pkg",
+				"/* FooBar converts Bar to string",
+				"   Bar should implement Stringer interface",
+				"   Warning: Bar should not be nil */",
+				"func FooBar(a Bar) string {",
+				"	return a.String()",
+				"}")},
 	}
 	for _, tt := range tests {
 		tt := tt
