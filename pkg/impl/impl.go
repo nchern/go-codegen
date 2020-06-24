@@ -131,18 +131,23 @@ func (i methodInfo) Body() string {
 		}
 
 		tp := buf.String()
-		switch tp {
-		case "int":
-			return "return 0"
-		case "string":
+		switch {
+		case tp == code.StringDecl:
 			return "return \"\""
-		case "bool":
+		case tp == code.BoolDecl:
 			return "return false"
-		case "interface{}":
+		case tp == code.ObjectDecl:
 			return "return nil"
+		case strings.HasPrefix(tp, code.IntDecl):
+			return "return 0"
 		}
-		if strings.HasPrefix(tp, "*") ||
-			strings.HasPrefix(tp, "[]") {
+
+		if strings.HasPrefix(tp, code.FloatDecl) {
+			return "return 0"
+		}
+
+		if strings.HasPrefix(tp, code.PtrDecl) ||
+			strings.HasPrefix(tp, code.SliceDecl) {
 			return "return nil"
 		}
 
