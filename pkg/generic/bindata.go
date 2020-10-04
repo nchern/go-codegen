@@ -87,7 +87,7 @@ func listListGo() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "list/list.go", size: 5713, mode: os.FileMode(420), modTime: time.Unix(1586698580, 0)}
+	info := bindataFileInfo{name: "list/list.go", size: 5713, mode: os.FileMode(420), modTime: time.Unix(1601837691, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -107,7 +107,7 @@ func setSetGo() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "set/set.go", size: 1581, mode: os.FileMode(420), modTime: time.Unix(1586699114, 0)}
+	info := bindataFileInfo{name: "set/set.go", size: 1581, mode: os.FileMode(420), modTime: time.Unix(1601837691, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -127,7 +127,7 @@ func hashmapHashmapGo() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "hashmap/hashmap.go", size: 2823, mode: os.FileMode(420), modTime: time.Unix(1586698634, 0)}
+	info := bindataFileInfo{name: "hashmap/hashmap.go", size: 2823, mode: os.FileMode(420), modTime: time.Unix(1601837691, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -147,7 +147,7 @@ func iteratorIteratorGo() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "iterator/iterator.go", size: 1250, mode: os.FileMode(420), modTime: time.Unix(1586698656, 0)}
+	info := bindataFileInfo{name: "iterator/iterator.go", size: 1250, mode: os.FileMode(420), modTime: time.Unix(1601837691, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -167,7 +167,7 @@ func converterConverterGo() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "converter/converter.go", size: 705, mode: os.FileMode(420), modTime: time.Unix(1586698695, 0)}
+	info := bindataFileInfo{name: "converter/converter.go", size: 705, mode: os.FileMode(420), modTime: time.Unix(1601837691, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
