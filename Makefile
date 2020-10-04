@@ -1,17 +1,13 @@
+GEN=go-codegen
 TEST_DIR=tests
 
-GEN=go-codegen
-
-.PHONY: clean
-clean:
-	@find $(TEST_DIR) -name 'generated_*.go' -exec rm {} \;
 
 .PHONY: bindata
 bindata:
 	go-bindata -prefix=pkg/generic -ignore="_test.go" -pkg=generic -o pkg/generic/bindata.go pkg/generic/list/ pkg/generic/set/ pkg/generic/hashmap/ pkg/generic/iterator/ pkg/generic/converter
 
 .PHONY: build
-build: bindata vet gen
+build: bindata vet
 	go build ./...
 
 .PHONY: install
@@ -30,5 +26,5 @@ gen:
 	$(GEN) --pkg=model immutable -f $(TEST_DIR)/immutable/model/model.go | gofmt  > $(TEST_DIR)/immutable/model/generated_model_impl.go
 
 .PHONY: test
-test: clean gen
+test:
 	go test -race ./...
