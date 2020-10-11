@@ -6,20 +6,35 @@ import (
 	"sync"
 )
 
+// T0 is a generic type variable placeholder of a key type. It will not appear in the generated code
 type T0 string
 
+// T0Predicate is a predicate function on T0 type
 type T0Predicate func(T0) bool
 
+// T0Visitor is a visitor function used to visit items of the list
 type T0Visitor func(i int, val T0) bool
 
+// T0LessFunc is a comparator function used to sort the list
 type T0LessFunc func(first, second T0) bool
 
+// T0List exposes a contract of a list of T0 elements
 type T0List interface {
+	// Filter returns a new list filled with items that are yielded true on given predicate
 	Filter(f T0Predicate) T0List
+
+	// IFilter is similar to Filter but returns a channel instead of a T0List instance
 	IFilter(f T0Predicate) <-chan T0
+
+	// Iter return a channel that is filled with this list elements
 	Iter() <-chan T0
+
+	// Each visits each element in the map. It stops iterations if visitor func returns false
 	Each(visitor T0Visitor) T0List
+
+	// Get returns i-th element from this list
 	Get(i int) T0
+
 	Any(f T0Predicate) bool
 	All(f T0Predicate) bool
 	FindFirst(f T0Predicate, defaultVal T0) T0
@@ -38,16 +53,19 @@ type baseT0List struct {
 	list []T0
 }
 
+// NewT0List creates an empty list of T0 elements
 func NewT0List() T0List {
 	return NewT0ListFromSlice([]T0{}...)
 }
 
+// NewT0ListFromSlice creates a list of T0 element initialised from a given slice
 func NewT0ListFromSlice(items ...T0) T0List {
 	l := make([]T0, len(items))
 	copy(l, items)
 	return &baseT0List{list: l}
 }
 
+// NewSyncronizedT0List creates a concurrent safe instance of a T0List
 func NewSyncronizedT0List(items ...T0) T0List {
 	l := make([]T0, len(items))
 	copy(l, items)
