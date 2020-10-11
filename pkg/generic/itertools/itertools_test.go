@@ -7,26 +7,37 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestShouldFilterAndCollect(t *testing.T) {
-	src := []T0{"foo", "bar", "buzz"}
+func TestFilterAndCollectShouldWork(t *testing.T) {
+	var tests = []struct {
+		name      string
+		predicate T0Predicate
+		given     []T0
+		expected  []T0
+	}{
+		{"1",
+			func(i int, s T0) bool { return !strings.HasPrefix(string(s), "b") },
+			[]T0{"foo", "bar", "buzz"},
+			[]T0{"foo"}},
+		{"2",
+			func(i int, s T0) bool { return i > 0 },
+			[]T0{"foo", "bar", "buzz"},
+			[]T0{"bar", "buzz"}},
 
-	ch := FromT0Slice(src)
-
-	filtered := ch.Filter(func(i int, s T0) bool { return !strings.HasPrefix(string(s), "b") })
-	for v := range filtered {
-		assert.Equal(t, T0("foo"), v)
+		{"3",
+			func(i int, s T0) bool { return false },
+			[]T0{"foo", "bar", "buzz"},
+			[]T0{}},
 	}
-
-	filtered = FromT0Slice(src).Filter(func(i int, s T0) bool { return i > 0 })
-	actual := filtered.Collect()
-	assert.Equal(t, []T0{"bar", "buzz"}, actual)
-
-	filtered = FromT0Slice(src).Filter(func(i int, s T0) bool { return false })
-	actual = filtered.Collect()
-	assert.Len(t, actual, 0)
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			actual := FromT0Slice(tt.given).Filter(tt.predicate).Collect()
+			assert.Equal(t, tt.expected, actual)
+		})
+	}
 }
 
-func TestShouldAnyBeOK(t *testing.T) {
+func TestAnyShould(t *testing.T) {
 	src := []T0{"foo", "bar", "buzz"}
 
 	var tests = []struct {
@@ -34,8 +45,10 @@ func TestShouldAnyBeOK(t *testing.T) {
 		expected  bool
 		predicate T0Predicate
 	}{
-		{"true", true, func(i int, x T0) bool { return x == "bar" }},
-		{"false", false, func(i int, x T0) bool { return x == "foobar" }},
+		{"return element from the middle",
+			true, func(i int, x T0) bool { return x == "bar" }},
+		{"return nothing on false predicate",
+			false, func(i int, x T0) bool { return x == "foobar" }},
 	}
 	for _, tt := range tests {
 		tt := tt
@@ -46,7 +59,24 @@ func TestShouldAnyBeOK(t *testing.T) {
 	}
 }
 
-func TestShouldAllBeOK(t *testing.T) {
+func TestBothAnyAndAllShouldFullyDrainChannel(t *testing.T) {
+	src := []T0{"foo", "bar", "buzz"}
+	ch := FromT0Slice(src)
+	actual := ch.Any(func(_ int, x T0) bool { return x == "foo" })
+	assert.True(t, actual)
+	for range ch {
+		panic("must never be called")
+	}
+
+	ch = FromT0Slice(src)
+	actual = ch.All(func(_ int, x T0) bool { return false })
+	assert.False(t, actual)
+	for range ch {
+		panic("must never be called")
+	}
+}
+
+func TestAllShould(t *testing.T) {
 	src := []T0{"foo", "bar", "buzz"}
 
 	var tests = []struct {
@@ -54,8 +84,10 @@ func TestShouldAllBeOK(t *testing.T) {
 		expected  bool
 		predicate T0Predicate
 	}{
-		{"true", true, func(i int, x T0) bool { return len(x) < 5 }},
-		{"false", false, func(i int, x T0) bool { return strings.HasPrefix(string(x), "b") }},
+		{"be true on true",
+			true, func(i int, x T0) bool { return len(x) < 5 }},
+		{"be false if predicate returns false at least onece",
+			false, func(i int, x T0) bool { return strings.HasPrefix(string(x), "b") }},
 	}
 	for _, tt := range tests {
 		tt := tt

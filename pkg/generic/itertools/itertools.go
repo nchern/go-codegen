@@ -40,10 +40,9 @@ func (c T0Channel) Filter(f T0Predicate) T0Channel {
 		i := -1
 		for v := range c {
 			i++
-			if !f(i, v) {
-				continue
+			if f(i, v) {
+				out <- v
 			}
-			out <- v
 		}
 		close(out)
 	}()
@@ -51,10 +50,10 @@ func (c T0Channel) Filter(f T0Predicate) T0Channel {
 	return T0Channel(out)
 }
 
-// Count return the number of items in the channel
+// Count drains the channel and returns the number of items in it
 func (c T0Channel) Count() int {
 	i := 0
-	for _ = range c {
+	for range c {
 		i++
 	}
 	return i
@@ -62,26 +61,36 @@ func (c T0Channel) Count() int {
 
 // Any returns true if predicate is true at leas for one item in the channel
 func (c T0Channel) Any(f T0Predicate) bool {
-	i := -1
-	for v := range c {
-		i++
-		if f(i, v) {
-			return true
+	res := make(chan bool, 2)
+
+	go func() {
+		i := -1
+		for v := range c {
+			i++
+			if f(i, v) {
+				res <- true
+			}
 		}
-	}
-	return false
+		res <- false
+	}()
+	return <-res
 }
 
 // All returns true if predicate is true for all of the items in the channel
 func (c T0Channel) All(f T0Predicate) bool {
-	i := -1
-	for v := range c {
-		i++
-		if !f(i, v) {
-			return false
+	res := make(chan bool, 2)
+
+	go func() {
+		i := -1
+		for v := range c {
+			i++
+			if !f(i, v) {
+				res <- false
+			}
 		}
-	}
-	return true
+		res <- true
+	}()
+	return <-res
 }
 
 // Reduce is a typical reduce operation

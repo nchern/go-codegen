@@ -24,7 +24,7 @@ func TestShouldGenerate(t *testing.T) {
 
 }
 
-func TestShouldGenerate1(t *testing.T) {
+func TestShouldGenerateFromSliceGenerator(t *testing.T) {
 	expected := []T0{"abc", "foo", "bar"}
 	iter := Generate(T0SliceGenerator(expected))
 
