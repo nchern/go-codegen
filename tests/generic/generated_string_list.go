@@ -9,18 +9,34 @@ import (
 	"sync"
 )
 
+// T0 is a generic type variable placeholder of a key type. It will not appear in the generated code
+
+// StringPredicate is a predicate function on String type
 type StringPredicate func(string) bool
 
+// StringVisitor is a visitor function used to visit items of the list
 type StringVisitor func(i int, val string) bool
 
+// StringLessFunc is a comparator function used to sort the list
 type StringLessFunc func(first, second string) bool
 
+// StringList exposes a contract of a list of String elements
 type StringList interface {
+	// Filter returns a new list filled with items that are yielded true on given predicate
 	Filter(f StringPredicate) StringList
+
+	// IFilter is similar to Filter but returns a channel instead of a StringList instance
 	IFilter(f StringPredicate) <-chan string
+
+	// Iter return a channel that is filled with this list elements
 	Iter() <-chan string
+
+	// Each visits each element in the map. It stops iterations if visitor func returns false
 	Each(visitor StringVisitor) StringList
+
+	// Get returns i-th element from this list
 	Get(i int) string
+
 	Any(f StringPredicate) bool
 	All(f StringPredicate) bool
 	FindFirst(f StringPredicate, defaultVal string) string
@@ -39,16 +55,19 @@ type baseStringList struct {
 	list []string
 }
 
+// NewStringList creates an empty list of String elements
 func NewStringList() StringList {
 	return NewStringListFromSlice([]string{}...)
 }
 
+// NewStringListFromSlice creates a list of String element initialised from a given slice
 func NewStringListFromSlice(items ...string) StringList {
 	l := make([]string, len(items))
 	copy(l, items)
 	return &baseStringList{list: l}
 }
 
+// NewSyncronizedStringList creates a concurrent safe instance of a StringList
 func NewSyncronizedStringList(items ...string) StringList {
 	l := make([]string, len(items))
 	copy(l, items)
@@ -153,7 +172,7 @@ func (l *baseStringList) Swap(i, j int) {
 }
 
 func (l *baseStringList) Sort(byFunc StringLessFunc) StringList {
-	sorter := &StringListSorter{l, byFunc}
+	sorter := &byFuncStringSorter{l, byFunc}
 	sort.Sort(sorter)
 
 	return l
@@ -196,12 +215,12 @@ func (l *baseStringList) Pop(defaultVal string) string {
 
 // PopRight
 
-type StringListSorter struct {
+type byFuncStringSorter struct {
 	*baseStringList
 	lessFn StringLessFunc
 }
 
-func (s *StringListSorter) Less(i, j int) bool {
+func (s *byFuncStringSorter) Less(i, j int) bool {
 	return s.lessFn(s.list[i], s.list[j])
 }
 

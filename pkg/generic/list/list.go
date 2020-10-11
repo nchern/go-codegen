@@ -170,7 +170,7 @@ func (l *baseT0List) Swap(i, j int) {
 }
 
 func (l *baseT0List) Sort(byFunc T0LessFunc) T0List {
-	sorter := &T0ListSorter{l, byFunc}
+	sorter := &byFuncT0Sorter{l, byFunc}
 	sort.Sort(sorter)
 
 	return l
@@ -213,12 +213,12 @@ func (l *baseT0List) Pop(defaultVal T0) T0 {
 
 // PopRight
 
-type T0ListSorter struct {
+type byFuncT0Sorter struct {
 	*baseT0List
 	lessFn T0LessFunc
 }
 
-func (s *T0ListSorter) Less(i, j int) bool {
+func (s *byFuncT0Sorter) Less(i, j int) bool {
 	return s.lessFn(s.list[i], s.list[j])
 }
 

@@ -73,3 +73,17 @@ func TestSort(t *testing.T) {
 		assert.Equal(t, expectedVal, inTest.Get(i))
 	}
 }
+
+func TestShouldSortConcurrently(t *testing.T) {
+	inTest := NewSyncronizedT0List(expectedArr...)
+
+	for i := 0; i < 20; i++ {
+		go inTest.Sort(func(a, b T0) bool { return a < b })
+	}
+
+	expected := []T0{"bar", "buzz", "foo"}
+
+	for i, expectedVal := range expected {
+		assert.Equal(t, expectedVal, inTest.Get(i))
+	}
+}
