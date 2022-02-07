@@ -20,9 +20,6 @@ type T0LessFunc func(first, second T0) bool
 
 // T0List exposes a contract of a list of T0 elements
 type T0List interface {
-	// Filter returns a new list filled with items that are yielded true on given predicate
-	Filter(f T0Predicate) T0List
-
 	// IFilter is similar to Filter but returns a channel instead of a T0List instance
 	IFilter(f T0Predicate) <-chan T0
 
@@ -35,17 +32,39 @@ type T0List interface {
 	// Get returns i-th element from this list
 	Get(i int) T0
 
+	// Filter returns a new list filled with items that are yielded true on given predicate
+	Filter(f T0Predicate) T0List
+
+	// Any return true if there is at least one item on which predicate returns true
 	Any(f T0Predicate) bool
+
+	// All return true if a given predicate returns true for all of the item
 	All(f T0Predicate) bool
+
 	FindFirst(f T0Predicate, defaultVal T0) T0
 	FindLast(f T0Predicate, defaultVal T0) T0
+
+	// Len returns th length of the list
 	Len() int
+
+	// Swap swaps given items
 	Swap(i, j int)
+
+	// Sort sorts the list
 	Sort(byFunc T0LessFunc) T0List
+
+	// Clone creates a shallow copy of this list
 	Clone() T0List
+	// Set set the value of i-th element
 	Set(i int, val T0)
+
+	// Append appends given items to the end of the list preserving the order
 	Append(items ...T0)
+
+	// Prepend prepends given items to the beginning of the list preserving the order
 	Prepend(items ...T0)
+
+	// Pop removes last item from the end of the list and returns it. It returns defaultVal in case of empty list
 	Pop(defaultVal T0) T0
 }
 
