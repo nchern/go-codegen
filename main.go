@@ -7,12 +7,12 @@ import (
 	"os"
 	"strings"
 
+	"github.com/muesli/coral"
 	"github.com/nchern/go-codegen/pkg/code"
 	"github.com/nchern/go-codegen/pkg/constructor"
 	"github.com/nchern/go-codegen/pkg/generic"
 	"github.com/nchern/go-codegen/pkg/immutable"
 	"github.com/nchern/go-codegen/pkg/impl"
-	"github.com/spf13/cobra"
 )
 
 func init() {
@@ -40,12 +40,12 @@ var (
 
 	flagOutputSource = false
 
-	commands = []*cobra.Command{
+	commands = []*coral.Command{
 		{
 			Use:   "generic [list of concrete types to substitute type vars]",
 			Short: "Processes go source as generic file and outputs code with substituted type vars.",
-			Args:  cobra.MinimumNArgs(1),
-			Run: func(cmd *cobra.Command, args []string) {
+			Args:  coral.MinimumNArgs(1),
+			Run: func(cmd *coral.Command, args []string) {
 				var err error
 				var generator *generic.Generator
 				if flagBuiltInType != "" {
@@ -65,8 +65,8 @@ var (
 		{
 			Use:   "immutable",
 			Short: "Generates immutable structure implementation by a given interface.",
-			Args:  cobra.NoArgs,
-			Run: func(cmd *cobra.Command, args []string) {
+			Args:  coral.NoArgs,
+			Run: func(cmd *coral.Command, args []string) {
 				err := code.WrapWithBannerPrinter(
 					immutable.FromFile(flagFileName).
 						WithPackageName(flagPkgName)).
@@ -77,8 +77,8 @@ var (
 		{
 			Use:   "constructor",
 			Short: "Generates constructor function for a given struct read from stdin.",
-			Args:  cobra.NoArgs,
-			Run: func(cmd *cobra.Command, args []string) {
+			Args:  coral.NoArgs,
+			Run: func(cmd *coral.Command, args []string) {
 				err := constructor.FromReader(inputStream(flagOutputSource)).
 					Generate(os.Stdout)
 				dieIf(err)
@@ -90,8 +90,8 @@ var (
 			Long: "Generates stubs to implement a given interface\n" +
 				"The difference between this command and impl(https://github.com/josharian/impl) utility is that interface declaration is read from stdin.\n" +
 				"So that it's really easy to use it with editors like Vim",
-			Args: cobra.NoArgs,
-			Run: func(cmd *cobra.Command, args []string) {
+			Args: coral.NoArgs,
+			Run: func(cmd *coral.Command, args []string) {
 				err := impl.FromReader(inputStream(flagOutputSource)).
 					Generate(os.Stdout)
 				dieIf(err)
@@ -101,7 +101,7 @@ var (
 )
 
 func main() {
-	rootCmd := &cobra.Command{
+	rootCmd := &coral.Command{
 		Use:  "go-codegen",
 		Long: "Go code generation tool. Prints output to stdout",
 	}
