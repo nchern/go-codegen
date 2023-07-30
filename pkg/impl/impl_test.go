@@ -148,8 +148,8 @@ func TestShouldGenerateMethodsWithCommentsIfCommentsWereProvided(t *testing.T) {
 		"	Bar(i int) string",
 
 		"	/*",
-		"		Buzz has multi-",
-		"		line comment",
+		"	Buzz has multi-",
+		"	line comment",
 		"	*/",
 		"	Buzz()",
 		"}")
@@ -169,8 +169,8 @@ func TestShouldGenerateMethodsWithCommentsIfCommentsWereProvided(t *testing.T) {
 		"}",
 
 		"/*",
-		"	Buzz has multi-",
-		"	line comment",
+		"Buzz has multi-",
+		"line comment",
 		"*/",
 		"func (t *testInterface) Buzz() {",
 		"	panic(\"Not implemented\")",
